@@ -1,0 +1,140 @@
+---
+// src/components/GeometricMesh.astro
+---
+
+<div class="fixed top-0 left-0 w-screen h-screen -z-10 overflow-hidden pointer-events-none bg-[#f6f6f6]">
+  <canvas id="mesh-canvas" class="block w-full h-full"></canvas>
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#f6f6f6]/80"></div>
+</div>
+
+<script is:inline>
+  (function initAdvancedSlidingMesh() {
+    const canvas = document.getElementById('mesh-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const baseSpacing = window.innerWidth < 768 ? 55 : 75; 
+    const jitterFactor = 0.75; 
+    const maxConnectDist = baseSpacing * 1.55; 
+    const colors = ['#8b5cf6', '#eab308', '#22c55e', '#3b82f6'];
+
+    let points = [];
+    let lines = [];
+    let logicalWidth = 0, logicalHeight = 0;
+    let globalFrame = 0;
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+      generateMesh();
+    }
+    
+    window.addEventListener('resize', resize);
+
+    function generateMesh() {
+      logicalWidth = window.innerWidth;
+      logicalHeight = window.innerHeight;
+      globalFrame = 0; 
+      points = [];
+      lines = [];
+
+      const cols = Math.ceil(logicalWidth / baseSpacing) + 2;
+      const rows = Math.ceil(logicalHeight / baseSpacing) + 2;
+
+      // 1. Matriz de Nodos con Profundidad Z y Desfase Sinusoidal
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const baseX = (c - 1) * baseSpacing;
+          const baseY = (r - 1) * baseSpacing;
+          const jitterX = (Math.random() - 0.5) * baseSpacing * jitterFactor;
+          const jitterY = (Math.random() - 0.5) * baseSpacing * jitterFactor;
+
+          const x = baseX + jitterX;
+          const y = baseY + jitterY;
+          const z = 0.35 + Math.random() * 0.65; 
+
+          points.push({
+            originX: x,
+            originY: y,
+            x: x,
+            y: y,
+            z: z,
+            phase: Math.random() * Math.PI * 2
+          });
+        }
+      }
+
+      // 2. Conexiones y Barrido Direccional (Derecha a Izquierda)
+      for (let i = 0; i < points.length; i++) {
+        for (let j = i + 1; j < points.length; j++) {
+          const p1 = points[i];
+          const p2 = points[j];
+          
+          if (Math.abs(p1.x - p2.x) > maxConnectDist) continue;
+
+          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+          
+          if (dist < maxConnectDist) {
+            const avgZ = (p1.z + p2.z) / 2;
+            
+            lines.push({
+              p1: p1,
+              p2: p2,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              progress: 0,
+              speed: 0.012 + Math.random() * 0.008,
+              // ARQUITECTURA DEL BARRIDO INVERSO: 
+              // Restamos la posición X del ancho total. Los puntos más a la derecha (x alto) 
+              // tendrán un delay cercano a 0. Los de la izquierda tendrán un delay mayor.
+              delay: ((logicalWidth - p1.x) * 0.08) + (Math.random() * 12), 
+              depthZ: avgZ
+            });
+          }
+        }
+      }
+    }
+
+    function render() {
+      if (logicalWidth === 0) return;
+      ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+      globalFrame++;
+
+      // Animación de respiración continua (Micro-oscilación en reposo)
+      const time = globalFrame * 0.02;
+      points.forEach(p => {
+        p.x = p.originX + Math.sin(time + p.phase) * (2.2 * p.z);
+        p.y = p.originY + Math.cos(time * 0.8 + p.phase) * (2.2 * p.z);
+      });
+
+      // Renderizado con Profundidad Dinámica
+      lines.forEach(line => {
+        if (globalFrame > line.delay && line.progress < 1) {
+          line.progress += line.speed;
+        }
+        
+        if (line.progress > 0) {
+          const currentX = line.p1.x + (line.p2.x - line.p1.x) * Math.min(line.progress, 1);
+          const currentY = line.p1.y + (line.p2.y - line.p1.y) * Math.min(line.progress, 1);
+
+          ctx.beginPath();
+          ctx.moveTo(line.p1.x, line.p1.y);
+          ctx.lineTo(currentX, currentY);
+          
+          ctx.strokeStyle = line.color;
+          ctx.lineWidth = 0.8 + (line.depthZ * 1.4); 
+          ctx.globalAlpha = 0.2 + (line.depthZ * 0.45); 
+          
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      });
+
+      requestAnimationFrame(render);
+    }
+    
+    resize(); 
+    render();
+  })();
+</script>

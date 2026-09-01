@@ -1,0 +1,738 @@
+---
+// src/components/About.astro
+
+const intro = "Soy un apasionado por el conocimiento, curioso por naturaleza, me interesa entender cómo funcionan las cosas y explorar en lo más profundo hasta dónde pueden llevarse las ideas cuando se cruzan distintas formas de pensar.";
+
+const intereses = [
+  "Geometría",
+  "Topología",
+  "Modelación científica",
+  "Machine Learning",
+  "Computación cuántica",
+  "Filosofía de la ciencia"
+];
+
+// Paleta tomada del GeometricMesh: azul, amarillo, morado, verde
+const tagPalette = [
+  { bg: "rgba(59, 130, 246, 0.10)", border: "#3b82f6", text: "#1d4ed8" },
+  { bg: "rgba(234, 179, 8, 0.14)",  border: "#eab308", text: "#92640a" },
+  { bg: "rgba(139, 92, 246, 0.10)", border: "#8b5cf6", text: "#6d28d9" },
+  { bg: "rgba(34, 197, 94, 0.10)",  border: "#22c55e", text: "#15803d" }
+];
+
+const skills = [
+  {
+    num: "01",
+    titulo: "Programación y Software",
+    items: ["Algoritmos", "Python", "MATLAB", "SQL", "Git", "Linux", "Excel"]
+  },
+  {
+    num: "02",
+    titulo: "Matemáticas",
+    items: ["Análisis", "Topología", "Álgebra", "Geometría", "Modelación"]
+  },
+  {
+    num: "03",
+    titulo: "Ciencia Computacional",
+    items: ["Machine Learning", "PINNs", "Computación cuántica", "Optimización", "Computación científica"]
+  },
+  {
+    num: "04",
+    titulo: "Competencias Transversales",
+    items: ["Filosofía", "Pensamiento crítico", "Argumentación", "Investigación", "Asertividad"]
+  }
+];
+
+const formacionAcademica = [
+  {
+    ano: "2024–presente",
+    institucion: "Universidad Nacional de Colombia — Sede Medellín",
+    programa: "Ciencias de la Computación",
+    tipo: "Programa de pregrado"
+  },
+  {
+    ano: "2024–presente",
+    institucion: "Universidad Nacional de Colombia — Sede Medellín",
+    programa: "Matemáticas",
+    tipo: "Programa de pregrado"
+  },
+  {
+    ano: "2026–presente",
+    institucion: "Universidad de Antioquia",
+    programa: "Filosofía",
+    tipo: "Programa de pregrado"
+  },
+  {
+    ano: "2023",
+    institucion: "SENA — articulación con la educación media",
+    programa: "Técnico en Análisis de Datos",
+    tipo: null
+  },
+  {
+    ano: "2023",
+    institucion: "INEM José Félix de Restrepo",
+    programa: "Bachillerato con profundización en Procesos Matemáticos",
+    tipo: null
+  }
+];
+
+const trayectoriaIntro = "Mi pasión por el conocimiento se ha construido desde muy pequeño a través de las personas y experiencias que me han rodeado. Mi familia, especialmente mi mamá, fue un motor fundamental para impulsarme a explorar, aprender y participar en todo aquello que despertara mi curiosidad; mis profesores, amigos y compañeros han seguido enriqueciendo ese proceso con nuevas perspectivas, preguntas y formas de entender el mundo. Esta trayectoria reúne algunas de las experiencias que más han contribuido a mi formación y que considero fundamentales en la persona y el estudiante que soy actualmente.";
+
+const trayectoriaAcademica = [
+  {
+    ano: "2015–2019",
+    titulo: "Primeros acercamientos a la ciencia",
+    descripcion: [
+      "Desde la educación primaria comencé a participar en proyectos escolares de investigación y experimentación. A través del Programa Ondas desarrollé un proyecto relacionado con el aprovechamiento de materiales reciclables para la construcción de elementos prácticos y, luego, participé en proyectos de robótica, acercándome tempranamente a la investigación, el diseño y la experimentación tecnológica."
+    ],
+    imagenes: [
+      { src: "/assets/about/foto-programa-ondas.webp", alt: "Jerónimo con un proyecto de robótica escolar del Programa Ondas" }
+    ]
+  },
+  {
+    ano: "2019–2023",
+    titulo: "Matemáticas, liderazgo y enseñanza",
+    descripcion: [
+      "Mi formación matemática comenzó a adquirir un carácter más especializado durante el bachillerato. En 2021, al ingresar a la rama académica del INEM, empecé a orientar mi formación hacia las matemáticas. Desde 2023 cursé la modalidad media académica de profundización en Procesos Matemáticos, complementando esta formación con mi participación y liderazgo en el semillero de matemáticas.",
+      "Durante este periodo también comencé a acompañar a otros estudiantes en su aprendizaje, incluyendo tutorías de matemáticas y programación, y participé en actividades de divulgación como las Ferias de Ciencias y Matemáticas."
+    ]
+  },
+  {
+    ano: "2023–2025",
+    titulo: "Modelos de Naciones Unidas",
+    descripcion: [
+      "Desde 2023 participé activamente en Simulaciones de Modelos de Naciones Unidas en diferentes instituciones educativas, una experiencia que se convirtió en una parte importante de mi formación durante el bachillerato. La participación constante en estos espacios me permitió desarrollar una formación cultural y política amplia.",
+      "A lo largo de esta experiencia fortalecí especialmente mi capacidad de argumentación, pensamiento crítico, comunicación oral, liderazgo, negociación y construcción de posiciones frente a problemas complejos. También aprendí a desenvolverme en entornos sociales diversos, defender ideas con claridad y comprender diferentes perspectivas mediante el diálogo y la confrontación respetuosa de argumentos."
+    ],
+    destacado: "Mi participación estuvo acompañada de diversos reconocimientos obtenidos en los modelos en los que participé.",
+    imagenes: [
+      { src: "/assets/about/foto-modelo-onu.webp", alt: "Jerónimo con una medalla del CSMUN, evidencia fotográfica del Grupo ONU" }
+    ],
+    linkText: "Evidencia Fotográfica de Grupo ONU",
+    linkUrl: "https://www.instagram.com/inemun.official/"
+  },
+  {
+    ano: "2025–2026",
+    titulo: "Exploración científica y tecnológica",
+    descripcion: [
+      "Durante 2025 y 2026 amplié mi formación académica mediante la participación en diferentes espacios de exploración científica y tecnológica, principalmente en las áreas de inteligencia artificial, computación cuántica y aprendizaje automático científico.",
+      "Participé en una hackathon de agentes de inteligencia artificial en la Universidad Nacional de Colombia, donde desarrollé un proyecto que obtuvo el segundo lugar. También participé en un workshop internacional de computación cuántica y en un meetup de Python enfocado en computación cuántica.",
+      "Más recientemente, participé en un workshop de Machine Learning científico en la Universidad EAFIT, donde profundicé en el estudio de las Physics-Informed Neural Networks (PINNs) conocimiento en el que me encuentro interesado en seguir investigando."
+    ],
+    destacado: "Estas experiencias han complementado mi formación universitaria mediante la participación práctica, el contacto con comunidades científicas y tecnológicas.",
+    imagenes: [
+      { src: "/assets/about/foto-hackathon-unal.webp", alt: "Equipo en la hackathon de agentes de inteligencia artificial en la Universidad Nacional de Colombia" },
+      { src: "/assets/about/foto-workshop-eafit.webp", alt: "Grupo del workshop de Machine Learning científico en la Universidad EAFIT" }
+    ],
+    linkText: "Repositorio Hackathon",
+    linkUrl: "https://github.com/K4ztark/Sistema_Multiagentes-Hackathon"
+  },
+  {
+    ano: "2024–presente",
+    titulo: "Formación interdisciplinaria",
+    descripcion: [
+      "Actualmente desarrollo mi formación universitaria en los Pregrados de Matemáticas, Ciencias de la Computación y Filosofía, disciplinas que he ido integrando progresivamente a través de mi formación académica, proyectos y experiencias de investigación."
+    ]
+  }
+];
+
+const trayectoriaLaboral = [
+  {
+    ano: "2026–presente",
+    rol: "Competencias digitales",
+    empresa: "Biblioteca Efe Gomez",
+    descripcion: "Acompañamiento a estudiantes mediante tutorías, talleres y actividades de formación en competencias digitales enfocadas en la programación."
+  },
+  {
+    ano: "2025",
+    rol: "Atención y servicio",
+    empresa: "Cafetería",
+    descripcion: "Experiencia laboral en atención al cliente y operación de un entorno de servicio."
+  },
+  {
+    ano: "2022",
+    rol: "Tutor académico",
+    empresa: null,
+    descripcion: "Desarrollo de tutorías remuneradas en matemáticas y programación, acompañando procesos de aprendizaje y resolución de problemas."
+  }
+];
+---
+
+<section id="sobre-mi" class="about-section">
+  <div class="fade-mask"></div>
+  <div class="about-container">
+
+    <!-- BLOQUE SOBRE MÍ -->
+    <div class="skills-section">
+      <h2 class="section-title">Sobre mí</h2>
+
+      <div class="about-intro">
+        <p class="about-text">{intro}</p>
+      </div>
+
+      <!-- Etiquetas de Intereses -->
+      <div class="tags-container">
+        {intereses.map((interes, i) => {
+          const c = tagPalette[i % tagPalette.length];
+          return (
+            <span
+              class="tag-item"
+              style={`background-color:${c.bg}; border-color:${c.border}; color:${c.text};`}
+            >
+              {interes}
+            </span>
+          );
+        })}
+      </div>
+
+      <div class="skills-grid">
+        {skills.map((skill) => (
+          <div class="skill-card">
+            <div class="skill-card-top">
+              <span class="skill-num">{skill.num}</span>
+              <h3 class="skill-title">{skill.titulo}</h3>
+            </div>
+            <ul class="skill-items">
+              {skill.items.map((item) => (
+                <li class="skill-item-row">
+                  <span class="skill-dot"></span>
+                  <span class="skill-item-text">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- BLOQUE FORMACIÓN ACADÉMICA (Lista simple, NO desplegable) -->
+    <div class="education-section">
+      <h2 class="section-title">Formación Académica</h2>
+      <div class="edu-list">
+        {formacionAcademica.map((item) => (
+          <div class="edu-item">
+            <div class="edu-header">
+              <span class="edu-ano">{item.ano}</span>
+              <span class="edu-institucion">{item.institucion}</span>
+            </div>
+            <div class="edu-content">
+              <p class="edu-programa">{item.programa}</p>
+              {item.tipo && <span class="edu-tipo-badge">{item.tipo}</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- BLOQUE TRAYECTORIA PRINCIPAL -->
+    <div class="trajectory-section">
+      <h2 class="section-title">Trayectoria</h2>
+      <p class="about-text trajectory-intro">{trayectoriaIntro}</p>
+
+      <!-- Académica (Acordeón — sin cambios, no se mencionó) -->
+      <h3 class="subsection-title">Académica</h3>
+      <div class="timeline-container">
+        <div class="timeline-events">
+          {trayectoriaAcademica.map((item, index) => (
+            <div class="timeline-item">
+              <div class="timeline-body">
+                <span class="timeline-date">{item.ano}</span>
+                <details class="timeline-details" open={index === 0}>
+                  <summary class="timeline-summary">
+                    <span class="timeline-title">{item.titulo}</span>
+                    <span class="timeline-icon">&gt;_</span>
+                  </summary>
+                  <div class="timeline-content">
+                    {item.descripcion.map((parrafo) => (
+                      <p class="timeline-desc">{parrafo}</p>
+                    ))}
+
+                    {item.imagenes && (
+                      <div class={`timeline-images ${item.imagenes.length > 1 ? "timeline-images-grid" : ""}`}>
+                        {item.imagenes.map((img) => (
+                          <img src={img.src} alt={img.alt} class="timeline-img" loading="lazy" />
+                        ))}
+                      </div>
+                    )}
+
+                    {item.destacado && (
+                      <div class="timeline-highlight">
+                        <span class="highlight-label">PUNTO CLAVE</span>
+                        <p class="highlight-text">{item.destacado}</p>
+                      </div>
+                    )}
+
+                    {item.linkUrl && (
+                      <a href={item.linkUrl} target="_blank" rel="noopener noreferrer" class="btn-rectangular btn-primary">
+                        {item.linkText}
+                      </a>
+                    )}
+                  </div>
+                </details>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Laboral (Lista Simple) -->
+      <h3 class="subsection-title">Laboral</h3>
+      <div class="simple-list">
+        {trayectoriaLaboral.map((item) => (
+          <div class="simple-list-item">
+            <span class="simple-list-date">{item.ano}</span>
+            <h4 class="simple-list-title">{item.rol}</h4>
+            {item.empresa && <span class="simple-list-subtitle font-bold">{item.empresa}</span>}
+            <p class="timeline-desc mt-2">{item.descripcion}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  .about-section {
+    position: relative;
+    width: 100%;
+    background-color: #ffffff;
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    z-index: 20;
+  }
+
+  .fade-mask {
+    position: absolute;
+    top: -4rem;
+    left: 0;
+    width: 100%;
+    height: 4rem;
+    background: linear-gradient(to bottom, transparent, #ffffff);
+    pointer-events: none;
+  }
+
+  .about-container {
+    width: 100%;
+    max-width: 64rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+  }
+
+  .section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .subsection-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2rem, 4.6vw, 2.9rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    margin-top: 4rem;
+    margin-bottom: 1.85rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  /* INTRODUCCIÓN */
+  .about-intro {
+    margin-bottom: 1.75rem;
+    border-left: 3px solid #0f172a;
+    padding-left: 1.25rem;
+  }
+
+  .about-text {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .trajectory-intro {
+    margin-bottom: 2rem;
+    border: none;
+    padding: 0;
+  }
+
+  /* ETIQUETAS DE INTERESES */
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2.75rem;
+  }
+
+  .tag-item {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border: 1.5px solid transparent;
+    padding: 0.45rem 1.15rem;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+    transition: all 0.2s ease;
+  }
+
+  .tag-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+    filter: brightness(0.96);
+  }
+
+  /* HABILIDADES */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  @media (min-width: 768px) {
+    .skills-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  .skill-card {
+    background-color: #ffffff;
+    border: 2px solid #0f172a;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  }
+
+  .skill-card:hover {
+    border-color: #22c55e;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -5px rgba(34, 197, 94, 0.2);
+  }
+
+  .skill-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .skill-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    opacity: 0.3;
+  }
+
+  .skill-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  /* Lista de sub-competencias */
+  ul.skill-items {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.7rem !important;
+  }
+
+  li.skill-item-row {
+    list-style: none !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.55rem !important;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569;
+    line-height: 1.45;
+  }
+
+  .skill-dot {
+    flex-shrink: 0;
+    display: block;
+    width: 5px;
+    height: 5px;
+    margin-top: 0.5em;
+    border-radius: 999px;
+    background-color: #22c55e;
+  }
+
+  .skill-item-text {
+    flex: 1;
+    word-break: break-word;
+  }
+
+  /* FORMACIÓN ACADÉMICA — LISTA SIMPLE (NO desplegable) */
+  .edu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .edu-item {
+    border: 2px solid #e2e8f0;
+    border-radius: 0.9rem;
+    background-color: #f8fafc;
+    overflow: hidden;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .edu-item:hover {
+    border-color: #0f172a;
+    background-color: #ffffff;
+  }
+
+  .edu-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .edu-ano {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #22c55e;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .edu-institucion {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.1rem, 1.9vw, 1.35rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  .edu-content {
+    padding: 0 1.5rem 1.4rem 1.5rem;
+    padding-top: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .edu-programa {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.05rem, 1.7vw, 1.2rem);
+    font-weight: 600;
+    color: #334155;
+    margin: 0;
+  }
+
+  .edu-tipo-badge {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0f172a;
+    background-color: #eef2f7;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* LISTAS SIMPLES (LABORAL) */
+  .simple-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .simple-list-item {
+    padding-left: 1.1rem;
+    border-left: 3px solid #22c55e;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .simple-list-date {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.05em;
+  }
+
+  .simple-list-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .simple-list-subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #475569;
+  }
+
+  .mt-2 { margin-top: 0.5rem; }
+  .font-bold { font-weight: 700; color: #0f172a; }
+
+  /* TRAYECTORIA ACADÉMICA ACORDEÓN */
+  .timeline-container { width: 100%; }
+  .timeline-events { display: flex; flex-direction: column; gap: 3rem; }
+  .timeline-item { position: relative; padding-left: 0; }
+
+  .timeline-date {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .timeline-details { background: transparent; border: none; }
+
+  .timeline-details > summary {
+    list-style: none !important;
+  }
+  .timeline-details > summary::-webkit-details-marker {
+    display: none !important;
+  }
+  .timeline-details > summary::marker {
+    content: "" !important;
+    display: none !important;
+  }
+
+  .timeline-summary {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    gap: 1rem;
+  }
+
+  .timeline-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.65rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: #0f172a;
+    transition: color 0.2s ease;
+    letter-spacing: -0.02em;
+  }
+  .timeline-summary:hover .timeline-title { color: #22c55e; }
+
+  .timeline-icon {
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #94a3b8;
+    transition: transform 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+  }
+  .timeline-details[open] .timeline-icon { color: #22c55e; transform: rotate(90deg); }
+
+  .timeline-content { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 1.4rem; }
+
+  .timeline-desc {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(1.25rem, 2vw, 1.45rem);
+    font-weight: 500;
+    color: #334155;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .timeline-images {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .timeline-images .timeline-img {
+    max-width: 480px;
+  }
+
+  .timeline-images-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .timeline-images-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .timeline-images-grid .timeline-img {
+    max-width: 100%;
+  }
+
+  .timeline-img {
+    width: 100%;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    aspect-ratio: auto !important;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: block;
+  }
+
+  .timeline-highlight {
+    background-color: #f8fafc;
+    border-left: 3px solid #0f172a;
+    padding: 1rem 1.25rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .highlight-label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8rem; font-weight: 800; color: #64748b; letter-spacing: 0.08em; }
+  .highlight-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0; line-height: 1.5; }
+
+  .btn-rectangular {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.02em; padding: 0.7rem 2.25rem; border-radius: 0.2rem;
+    text-decoration: none !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    align-self: flex-start; margin-top: 0.25rem;
+  }
+  .btn-primary { color: #ffffff !important; background-color: #1e293b; border: 1px solid #1e293b; }
+  .btn-primary:hover { background-color: #22c55e; border-color: #22c55e; color: #0f172a !important; }
+</style>

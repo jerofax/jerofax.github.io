@@ -1,0 +1,90 @@
+---
+// src/components/Header.astro
+const navItems = [
+  { name: 'Inicio', href: '#inicio' },
+  { name: 'Sobre mí', href: '#sobre-mi' },
+  { name: 'Proyectos', href: '#proyectos' },
+  { name: 'Notas', href: '#notas' },
+  { name: 'Contacto', href: '#contacto' },
+];
+---
+
+<header class="header-fijo">
+  <div class="header-contenedor">
+    
+    <!-- Logo "JR." -->
+    <a href="#inicio" class="logo-text">
+      JR<span class="punto-verde">.</span>
+    </a>
+
+    <!-- Menú Horizontal -->
+    <nav class="nav-list">
+      {navItems.map(item => (
+        <a href={item.href} class="nav-item">
+          {item.name}
+        </a>
+      ))}
+    </nav>
+
+  </div>
+</header>
+
+<style>
+  /* CSS Scoped: Inmunidad total contra estilos globales */
+  .header-fijo {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 80px !important;
+    background-color: #1e293b !important; /* Gris oscuro pizarra */
+    border-bottom: 1px solid #334155 !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .header-contenedor {
+    max-width: 72rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo-text {
+    font-family: monospace;
+    font-size: 1.5rem !important;
+    font-weight: 900 !important;
+    color: #ffffff !important; /* Blanco puro */
+    text-decoration: none !important;
+    letter-spacing: 0.05em;
+  }
+
+  .punto-verde {
+    color: #22c55e !important;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    overflow-x: auto;
+  }
+
+  .nav-item {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important; /* Blanco puro sin herencia morada */
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .nav-item:hover {
+    color: #22c55e !important; /* Verde al pasar el cursor */
+  }
+</style>

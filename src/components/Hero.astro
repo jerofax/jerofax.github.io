@@ -1,0 +1,258 @@
+---
+// src/components/Hero.astro
+import GeometricMesh from './GeometricMesh.astro';
+---
+
+<section class="hero-section">
+  <GeometricMesh />
+
+  <!-- Recuadro Hero Minimalista -->
+  <div class="hero-card">
+    <div class="hero-grid">
+      
+      <!-- Columna Izquierda: Tipografía y Botones Rectangulares -->
+      <div class="hero-left">
+        <div>
+          <div class="name-container">
+            <span class="firstname">JERONIMO</span>
+            <span class="lastname">RESTREPO</span>
+          </div>
+          
+          <p class="subtitle">
+            Matemático · Científico de la computación · Filósofo
+          </p>
+        </div>
+
+        <!-- Botones Rectangulares Anchos y Compactos -->
+        <div class="cta-container">
+          <a href="#contacto" class="btn-rectangular btn-primary">
+            Contactar
+          </a>
+          
+          <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" class="btn-rectangular btn-secondary">
+            Ver CV
+          </a>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Fotografía -->
+      <div class="hero-right">
+        <div class="photo-wrapper">
+          <img 
+            src="/foto.jpg" 
+            alt="Jerónimo Restrepo" 
+            class="photo-img"
+            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'>Guarda tu foto en public/foto.jpg</div>';"
+          />
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&display=swap');
+
+  /* En móvil el alto se ajusta naturalmente sin forzar min-height y deja espacio al Header fijo */
+  .hero-section {
+    position: relative;
+    width: 100%;
+    padding-top: 5.5rem; /* Margen superior para no solapar el Header */
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Solo en pantallas de PC reactivamos el centrado vertical en pantalla completa */
+  @media (min-width: 768px) {
+    .hero-section {
+      min-height: calc(100vh - 80px);
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+  }
+
+  .hero-card {
+    position: relative;
+    width: 100%;
+    max-width: 64rem;
+    background-color: #ffffff;
+    border: 2px solid #0f172a;
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    padding: 1.75rem 1.25rem; /* Padding interno optimizado para móvil */
+    z-index: 10;
+  }
+
+  @media (min-width: 768px) {
+    .hero-card {
+      padding: 3rem 3.5rem;
+    }
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-grid {
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 3rem;
+    }
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .hero-left {
+      gap: 3rem;
+    }
+  }
+
+  .name-container {
+    display: flex;
+    flex-direction: column;
+    line-height: 0.92;
+    margin-bottom: 1rem;
+  }
+
+  .firstname {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.2rem, 6.5vw, 5rem);
+    font-weight: 300;
+    color: #0f172a;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+  }
+
+  .lastname {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.2rem, 6.5vw, 5rem);
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #475569;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 768px) {
+    .subtitle {
+      font-size: 1rem;
+    }
+  }
+
+  /* BOTONES RECTANGULARES */
+  .cta-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-rectangular {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.825rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 0.45rem 2.25rem;
+    border-radius: 0.2rem;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-primary {
+    color: #ffffff !important;
+    background-color: #1e293b;
+    border: 1px solid #1e293b;
+  }
+
+  .btn-primary:hover {
+    background-color: #22c55e;
+    border-color: #22c55e;
+    color: #0f172a !important;
+  }
+
+  .btn-secondary {
+    color: #1e293b !important;
+    background-color: #ffffff;
+    border: 1px solid #1e293b;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f8fafc;
+    color: #22c55e !important;
+    border-color: #22c55e;
+  }
+
+  /* FOTOGRAFÍA */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-right {
+      justify-content: flex-end;
+    }
+  }
+
+  .photo-wrapper {
+    width: 100%;
+    max-width: 250px;
+    aspect-ratio: 4 / 5;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    border: 1px solid #e2e8f0;
+  }
+
+  @media (min-width: 768px) {
+    .photo-wrapper {
+      max-width: 320px;
+    }
+  }
+
+  .photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+</style>

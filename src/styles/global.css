@@ -1,0 +1,21 @@
+/* src/styles/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  /* Mantenemos el color base aquí por seguridad durante la carga */
+  background-color: #f6f6f6; 
+}
+
+body {
+  /* ¡IMPORTANTE! Fondo transparente para que se vea la malla fija detrás */
+  background-color: transparent;
+  color: #1e293b;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+  /* Aseguramos que el body cree un contexto de apilamiento base */
+  position: relative;
+  z-index: 1;
+}
