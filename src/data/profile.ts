@@ -7,6 +7,8 @@
 
 export const site = {
   name: "Jerónimo Restrepo",
+  /** Nombre completo: título de la página, pie y datos para buscadores. */
+  fullName: "Jerónimo Restrepo Ramírez",
   firstName: "Jerónimo",
   lastName: "Restrepo",
   roles: ["Matemático", "Científico de la computación", "Filósofo"],
@@ -18,7 +20,7 @@ export const site = {
   tagline:
     "Estudio la forma de las cosas: en las matemáticas, en el código y en las ideas.",
   description:
-    "Portafolio de Jerónimo Restrepo — matemático, científico de la computación y filósofo. Geometría, topología, machine learning científico y computación cuántica.",
+    "Portafolio de Jerónimo Restrepo Ramírez — matemático, científico de la computación y filósofo. Geometría, topología, machine learning científico y computación cuántica.",
 } as const;
 
 /** Con "/" delante para que también funcionen desde las páginas de notas. */
