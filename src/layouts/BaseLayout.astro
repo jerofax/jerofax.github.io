@@ -2,7 +2,7 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import GeometricMesh from "../components/GeometricMesh.astro";
-import { site } from "../data/profile";
+import { site, intereses } from "../data/profile";
 import "../styles/global.css";
 
 interface Props {
@@ -12,6 +12,31 @@ interface Props {
 
 const { title, description = site.description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
+const home = new URL("/", Astro.site ?? Astro.url).href;
+
+/* Datos estructurados (schema.org): le dicen a Google explícitamente de
+   quién es el sitio, para asociar la página con el nombre al buscarlo. */
+const persona = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.fullName,
+  alternateName: ["Jeronimo Restrepo Ramirez", site.name, "Jeronimo Restrepo"],
+  url: home,
+  image: new URL(site.photo, home).href,
+  description: site.description,
+  jobTitle: "Estudiante de Matemáticas, Ciencias de la Computación y Filosofía",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Medellín",
+    addressCountry: "CO",
+  },
+  alumniOf: [
+    { "@type": "CollegeOrUniversity", name: "Universidad Nacional de Colombia" },
+    { "@type": "CollegeOrUniversity", name: "Universidad de Antioquia" },
+  ],
+  knowsAbout: intereses,
+  sameAs: [site.github],
+};
 ---
 
 <!doctype html>
@@ -30,8 +55,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content={site.fullName} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="author" content={site.name} />
+    <meta name="author" content={site.fullName} />
+
+    {/* Verificación de propiedad en Google Search Console. */}
+    <meta name="google-site-verification" content="pRiT4-M_zXv-NmQKBRr5IMDHVLVdd95Nir9_SyEvFKw" />
+    <script type="application/ld+json" set:html={JSON.stringify(persona)} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

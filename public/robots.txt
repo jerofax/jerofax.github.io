@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jerofax.github.io/sitemap-index.xml
