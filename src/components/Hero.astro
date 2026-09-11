@@ -1,258 +1,348 @@
 ---
-// src/components/Hero.astro
-import GeometricMesh from './GeometricMesh.astro';
+import { site, accents } from "../data/profile";
 ---
 
-<section class="hero-section">
-  <GeometricMesh />
+<section id="inicio" class="hero">
+  <div class="shell sheet hero-grid">
+    <div class="hero-main">
+      <p class="status" data-reveal>
+        <span class="status-dot"></span>
+        Estudiante e investigador · {site.location}
+      </p>
 
-  <!-- Recuadro Hero Minimalista -->
-  <div class="hero-card">
-    <div class="hero-grid">
-      
-      <!-- Columna Izquierda: Tipografía y Botones Rectangulares -->
-      <div class="hero-left">
-        <div>
-          <div class="name-container">
-            <span class="firstname">JERONIMO</span>
-            <span class="lastname">RESTREPO</span>
-          </div>
-          
-          <p class="subtitle">
-            Matemático · Científico de la computación · Filósofo
+      <h1 class="name">
+        <span class="name-line" data-reveal style="--reveal-delay:60ms">
+          <span class="name-first">{site.firstName}</span>
+        </span>
+        <span class="name-line" data-reveal style="--reveal-delay:160ms">
+          <span class="name-last">{site.lastName}</span>
+        </span>
+      </h1>
+
+      <p class="roles" data-reveal style="--reveal-delay:260ms">
+        {
+          site.roles.map((role, i) => (
+            <span class="role">
+              <span class="role-dot" style={`background:${accents[i % accents.length]}`} />
+              {role}
+            </span>
+          ))
+        }
+      </p>
+
+      <p class="tagline" data-reveal style="--reveal-delay:340ms">
+        {site.tagline}
+      </p>
+
+      <div class="cta" data-reveal style="--reveal-delay:420ms">
+        <a href="#contacto" class="btn">
+          Contactar
+          <svg viewBox="0 0 24 24" class="btn-icon" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6"></path>
+          </svg>
+        </a>
+        <a
+          href={site.cv}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--ghost"
+        >
+          Ver CV
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-portrait" data-reveal style="--reveal-delay:220ms">
+      <div class="frame">
+        <span class="corner corner--tl"></span>
+        <span class="corner corner--br"></span>
+        <div class="photo" data-photo>
+          <img
+            src={site.photo}
+            alt={`Retrato de ${site.name}`}
+            width="640"
+            height="800"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <p class="photo-fallback">
+            Guarda tu foto en <code>public/foto.jpg</code>
           </p>
         </div>
-
-        <!-- Botones Rectangulares Anchos y Compactos -->
-        <div class="cta-container">
-          <a href="#contacto" class="btn-rectangular btn-primary">
-            Contactar
-          </a>
-          
-          <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" class="btn-rectangular btn-secondary">
-            Ver CV
-          </a>
-        </div>
       </div>
-
-      <!-- Columna Derecha: Fotografía -->
-      <div class="hero-right">
-        <div class="photo-wrapper">
-          <img 
-            src="/foto.jpg" 
-            alt="Jerónimo Restrepo" 
-            class="photo-img"
-            onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'photo-placeholder\'>Guarda tu foto en public/foto.jpg</div>';"
-          />
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&display=swap');
-
-  /* En móvil el alto se ajusta naturalmente sin forzar min-height y deja espacio al Header fijo */
-  .hero-section {
+  .hero {
     position: relative;
-    width: 100%;
-    padding-top: 5.5rem; /* Margen superior para no solapar el Header */
-    padding-bottom: 2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    padding: calc(var(--header-h) + 1.5rem) var(--gutter) 1.5rem;
   }
 
-  /* Solo en pantallas de PC reactivamos el centrado vertical en pantalla completa */
-  @media (min-width: 768px) {
-    .hero-section {
-      min-height: calc(100vh - 80px);
-      padding-top: 2rem;
-      padding-bottom: 2rem;
-    }
-  }
-
-  .hero-card {
-    position: relative;
-    width: 100%;
-    max-width: 64rem;
-    background-color: #ffffff;
-    border: 2px solid #0f172a;
-    border-radius: 1.25rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-    padding: 1.75rem 1.25rem; /* Padding interno optimizado para móvil */
-    z-index: 10;
-  }
-
-  @media (min-width: 768px) {
-    .hero-card {
-      padding: 3rem 3.5rem;
+  /* En escritorio la primera hoja ocupa la pantalla inicial, con la
+     malla asomando alrededor. */
+  @media (min-width: 900px) {
+    .hero {
+      min-height: 100svh;
+      padding-bottom: 2.25rem;
     }
   }
 
   .hero-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.75rem;
+    gap: 2.5rem;
     align-items: center;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 900px) {
     .hero-grid {
-      grid-template-columns: 1.25fr 0.75fr;
-      gap: 3rem;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
     }
   }
 
-  .hero-left {
+  .hero-main {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 1.75rem;
+    align-items: flex-start;
+    gap: 1.35rem;
   }
 
-  @media (min-width: 768px) {
-    .hero-left {
-      gap: 3rem;
-    }
-  }
-
-  .name-container {
-    display: flex;
-    flex-direction: column;
-    line-height: 0.92;
-    margin-bottom: 1rem;
-  }
-
-  .firstname {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(2.2rem, 6.5vw, 5rem);
-    font-weight: 300;
-    color: #0f172a;
-    letter-spacing: -0.035em;
-    text-transform: uppercase;
-  }
-
-  .lastname {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(2.2rem, 6.5vw, 5rem);
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.035em;
-    text-transform: uppercase;
-    margin-top: 0.2rem;
-  }
-
-  .subtitle {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #475569;
-    letter-spacing: -0.01em;
-  }
-
-  @media (min-width: 768px) {
-    .subtitle {
-      font-size: 1rem;
-    }
-  }
-
-  /* BOTONES RECTANGULARES */
-  .cta-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .btn-rectangular {
+  /* ── Estado ───────────────────────────────────────────────── */
+  .status {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.825rem;
-    font-weight: 700;
+    gap: 0.55rem;
+    padding: 0.4rem 0.9rem 0.4rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-sunken);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
     letter-spacing: 0.02em;
-    padding: 0.45rem 2.25rem;
-    border-radius: 0.2rem;
-    text-decoration: none !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--ink-muted);
   }
 
-  .btn-primary {
-    color: #ffffff !important;
-    background-color: #1e293b;
-    border: 1px solid #1e293b;
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
   }
 
-  .btn-primary:hover {
-    background-color: #22c55e;
-    border-color: #22c55e;
-    color: #0f172a !important;
-  }
-
-  .btn-secondary {
-    color: #1e293b !important;
-    background-color: #ffffff;
-    border: 1px solid #1e293b;
-  }
-
-  .btn-secondary:hover {
-    background-color: #f8fafc;
-    color: #22c55e !important;
-    border-color: #22c55e;
-  }
-
-  /* FOTOGRAFÍA */
-  .hero-right {
+  /* ── Nombre ───────────────────────────────────────────────── */
+  /* Interlineado holgado: el apellido pinta su degradado con
+     background-clip: text, y cualquier trozo de letra que sobresalga de
+     la caja de línea queda sin fondo, es decir, invisible. Con la serif,
+     un interlineado menor que 1 recortaba las letras. */
+  .name {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    line-height: 1.02;
+    margin-block: 0.25rem;
   }
 
-  @media (min-width: 768px) {
-    .hero-right {
-      justify-content: flex-end;
-    }
+  .name-line {
+    display: block;
   }
 
-  .photo-wrapper {
+  .name-first,
+  .name-last {
+    display: block;
+    /* Más pequeño y menos apretado que con la sans: las letras de una
+       serif son más anchas y se pegan si se les quita espacio. */
+    font-size: clamp(2.5rem, 9.5vw, 5.6rem);
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .name-first {
+    font-weight: 300;
+  }
+
+  .name-last {
+    font-weight: 700;
+    padding-bottom: 0.04em;
+    /* Degradado sutil: el apellido "pesa" sin gritar. */
+    background: linear-gradient(
+      100deg,
+      var(--ink) 30%,
+      color-mix(in srgb, var(--accent) 70%, var(--ink)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ── Roles ────────────────────────────────────────────────── */
+  .roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.15rem;
+  }
+
+  .role {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .role-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tagline {
+    max-width: 44ch;
+    font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+    color: var(--ink-muted);
+    line-height: 1.7;
+  }
+
+  /* ── Llamadas a la acción ─────────────────────────────────── */
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.35rem;
+  }
+
+  .btn-icon {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .btn:hover .btn-icon {
+    transform: translateX(2px);
+  }
+
+  /* ── Retrato ──────────────────────────────────────────────── */
+  .hero-portrait {
+    position: relative;
+    justify-self: center;
     width: 100%;
-    max-width: 250px;
-    aspect-ratio: 4 / 5;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    background-color: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    max-width: 21rem;
   }
 
-  @media (min-width: 768px) {
-    .photo-wrapper {
-      max-width: 320px;
+  @media (min-width: 900px) {
+    .hero-portrait {
+      justify-self: end;
+      max-width: 23rem;
     }
   }
 
-  .photo-img {
+  .frame {
+    position: relative;
+    padding: 0.6rem;
+    border-radius: calc(var(--radius-lg) + 0.35rem);
+    background: var(--surface-sunken);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-md);
+    transition: transform 0.6s var(--ease);
+  }
+
+  .frame:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Esquinas: eco geométrico de la malla del fondo. */
+  .corner {
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 2px solid var(--accent);
+    opacity: 0.75;
+  }
+
+  .corner--tl {
+    top: -0.45rem;
+    left: -0.45rem;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 0.6rem 0 0 0;
+  }
+
+  .corner--br {
+    bottom: -0.45rem;
+    right: -0.45rem;
+    border-left: 0;
+    border-top: 0;
+    border-radius: 0 0 0.6rem 0;
+  }
+
+  .photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface-sunken);
+  }
+
+  .photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    display: block;
+    transition: transform 0.9s var(--ease);
   }
 
-  .photo-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
+  .frame:hover .photo img {
+    transform: scale(1.02);
+  }
+
+  .photo-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 1.5rem;
     text-align: center;
-    font-family: monospace;
-    font-size: 0.85rem;
-    color: #64748b;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+
+  .photo[data-failed="true"] img {
+    display: none;
+  }
+
+  .photo[data-failed="true"] .photo-fallback {
+    display: flex;
+  }
+
+  .photo-fallback code {
+    color: var(--ink);
   }
 </style>
+
+<script>
+  /* Fallback del retrato sin atributos onerror en el markup. */
+  const photo = document.querySelector<HTMLElement>("[data-photo]");
+  const img = photo?.querySelector("img");
+  if (photo && img) {
+    const fail = () => (photo.dataset.failed = "true");
+    if (img.complete && img.naturalWidth === 0) fail();
+    img.addEventListener("error", fail);
+  }
+</script>

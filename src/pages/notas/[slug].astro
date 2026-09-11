@@ -1,0 +1,235 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/profile";
+import { tienePagina, fechaVisible, etiquetaLocal, type Nota } from "../../lib/notas";
+/* Sólo las páginas de notas cargan los estilos y fuentes de KaTeX. */
+import "katex/dist/katex.min.css";
+
+export async function getStaticPaths() {
+  const notas = await getCollection("notas");
+  return notas
+    .filter(tienePagina)
+    .map((nota) => ({ params: { slug: nota.id }, props: { nota } }));
+}
+
+interface Props {
+  nota: Nota;
+}
+
+const { nota } = Astro.props;
+const { Content } = await render(nota);
+const etiqueta = etiquetaLocal(nota);
+---
+
+<BaseLayout title={`${nota.data.titulo} | ${site.name}`} description={nota.data.resumen}>
+  <section class="note-page">
+    <article class="shell sheet article">
+      <a href="/#notas" class="back">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
+        Todas las notas
+      </a>
+
+      <header class="head">
+        <p class="eyebrow">{nota.data.categoria}</p>
+        <h1 class="title">{nota.data.titulo}</h1>
+        <p class="lead">{nota.data.resumen}</p>
+        <p class="meta">
+          <span>{fechaVisible(nota)}</span>
+          {etiqueta && <span class="local">{etiqueta}</span>}
+        </p>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+  .note-page {
+    padding: calc(var(--header-h) + 1.5rem) var(--gutter) 1rem;
+  }
+
+  /* Columna de lectura más estrecha que las hojas de la portada. */
+  .article {
+    max-width: 50rem;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    transition: color 0.3s var(--ease);
+  }
+
+  .back:hover {
+    color: var(--accent-strong);
+  }
+
+  .back svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .back:hover svg {
+    transform: translateX(-2px);
+  }
+
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding-bottom: 1.75rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .title {
+    font-size: clamp(2rem, 5.5vw, 3.1rem);
+    letter-spacing: -0.045em;
+    color: var(--ink);
+  }
+
+  .lead {
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .local {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    border: 1px dashed var(--line-strong);
+    color: var(--ink-muted);
+  }
+
+  /* ── Contenido de la nota (HTML generado desde Markdown) ──── */
+  .prose {
+    font-size: 1.08rem;
+    line-height: 1.8;
+    color: var(--ink-soft);
+  }
+
+  .prose :global(> * + *) {
+    margin-top: 1.15em;
+  }
+
+  .prose :global(h2) {
+    margin-top: 2.2em;
+    font-size: 1.55rem;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+
+  .prose :global(h3) {
+    margin-top: 1.8em;
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.4em;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 0.35em;
+  }
+
+  .prose :global(li::marker) {
+    color: var(--accent);
+  }
+
+  .prose :global(strong) {
+    color: var(--ink);
+  }
+
+  .prose :global(a) {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    text-underline-offset: 3px;
+  }
+
+  .prose :global(:not(pre) > code) {
+    padding: 0.12em 0.4em;
+    border-radius: 0.35rem;
+    background: var(--surface-sunken);
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--ink);
+  }
+
+  .prose :global(pre) {
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-size: 0.88rem;
+  }
+
+  /* Citas, definiciones y teoremas. */
+  .prose :global(blockquote) {
+    margin-inline: 0;
+    padding: 0.9rem 1.2rem;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    color: var(--ink);
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+  }
+
+  .prose :global(hr) {
+    margin-block: 2.5em;
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  /* LaTeX en bloque: si una fórmula es más ancha que la pantalla,
+     se desplaza dentro de su propia caja en vez de romper la página. */
+  .prose :global(.katex-display) {
+    margin-block: 1.4em;
+    padding-block: 0.35em;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .prose :global(.katex) {
+    font-size: 1.08em;
+    color: var(--ink);
+  }
+</style>

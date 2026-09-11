@@ -1,0 +1,255 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { proyectos, accents } from "../data/profile";
+---
+
+<section id="proyectos" class="section">
+  <div class="shell sheet">
+    <SectionHeading
+      eyebrow="02 — Trabajo"
+      title="Proyectos"
+      lead="Cosas que he construido o que estoy investigando ahora mismo, entre las matemáticas, el código y la ciencia computacional."
+    />
+
+    <div class="grid">
+      {
+        proyectos.map((proyecto, i) => (
+          <article
+            class="project"
+            data-spotlight
+            data-reveal
+            style={`--reveal-delay:${i * 80}ms; --chip-color:${accents[i % accents.length]}`}
+          >
+            <div class="project-top">
+              <span class="project-year">{proyecto.ano}</span>
+              <span
+                class="status"
+                data-state={proyecto.estado.toLowerCase().replace(" ", "-")}
+              >
+                {proyecto.estado}
+              </span>
+            </div>
+
+            <h3 class="project-title">
+              {
+                proyecto.linkUrl ? (
+                  /* Enlace extendido: sólo el título es interactivo para el
+                     lector de pantalla, pero toda la tarjeta es clicable. */
+                  <a
+                    class="project-link"
+                    href={proyecto.linkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {proyecto.titulo}
+                    <span class="sr-only"> — {proyecto.linkText}</span>
+                  </a>
+                ) : (
+                  proyecto.titulo
+                )
+              }
+              {proyecto.linkUrl && (
+                <svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 17L17 7M8 7h9v9" />
+                </svg>
+              )}
+            </h3>
+
+            {proyecto.destacado && <span class="award">{proyecto.destacado}</span>}
+
+            <p class="project-text">{proyecto.resumen}</p>
+
+            <ul class="project-tags">
+              {proyecto.tags.map((tag) => (
+                <li class="chip chip--mono">{tag}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.1rem;
+  }
+
+  .project {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.6rem 1.5rem 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.35s var(--ease), border-color 0.35s var(--ease),
+      box-shadow 0.35s var(--ease);
+  }
+
+  .project::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      18rem circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--chip-color) 15%, transparent),
+      transparent 70%
+    );
+    transition: opacity 0.35s var(--ease);
+  }
+
+  /* Filo de color en el borde superior: identifica cada tarjeta. */
+  .project::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--chip-color);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.45s var(--ease);
+  }
+
+  .project:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--chip-color) 40%, var(--line));
+    box-shadow: var(--shadow-md);
+  }
+
+  .project:hover::before,
+  .project:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .project-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .project-year {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+  }
+
+  .status[data-state="en-curso"]::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .status[data-state="terminado"]::before {
+    background: var(--color-azure);
+  }
+
+  .status[data-state="explorando"]::before {
+    background: var(--color-amber);
+  }
+
+  .project-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    transition: color 0.25s var(--ease);
+  }
+
+  .project:hover .project-title {
+    color: color-mix(in srgb, var(--chip-color) 60%, var(--ink));
+  }
+
+  /* El pseudo-elemento cubre la tarjeta: clic en cualquier punto. */
+  .project-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .project-arrow {
+    width: 0.95rem;
+    height: 0.95rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.45;
+    transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+  }
+
+  .project:hover .project-arrow {
+    opacity: 1;
+    transform: translate(2px, -2px);
+  }
+
+  .award {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-amber) 18%, transparent);
+    color: color-mix(in srgb, var(--color-amber) 65%, var(--ink));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .project-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: auto 0 0;
+    padding: 0.6rem 0 0;
+  }
+
+  .project-tags .chip {
+    --chip-color: var(--ink-muted);
+  }
+</style>

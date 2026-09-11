@@ -1,0 +1,69 @@
+---
+import { site } from "../data/profile";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <p class="copy">© {year} {site.name}</p>
+
+    <a href="#" class="top">
+      Volver arriba
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>
+    </a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: 2rem;
+    border-top: 1px solid var(--line);
+    background: var(--surface-raised);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    padding-block: 1.75rem;
+  }
+
+  .copy {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+
+  .top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    transition: color 0.3s var(--ease);
+  }
+
+  .top:hover {
+    color: var(--accent-strong);
+  }
+
+  .top svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .top:hover svg {
+    transform: translateY(-2px);
+  }
+</style>

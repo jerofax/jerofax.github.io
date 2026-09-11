@@ -1,0 +1,192 @@
+---
+import SectionHeading from "./SectionHeading.astro";
+import { accents } from "../data/profile";
+import { notasListadas, tienePagina, fechaVisible, etiquetaLocal } from "../lib/notas";
+
+const notas = await notasListadas();
+---
+
+<section id="notas" class="section">
+  <div class="shell sheet">
+    <SectionHeading
+      eyebrow="03 — Escritos"
+      title="Notas"
+      lead="Apuntes cortos sobre lo que voy estudiando. Ideas a medio cocinar más que artículos terminados."
+    />
+
+    {
+      notas.length === 0 ? (
+        <p class="empty">Pronto aparecerán las primeras notas.</p>
+      ) : (
+        <ol class="notes">
+          {notas.map((nota, i) => {
+            const etiqueta = etiquetaLocal(nota);
+            return (
+              <li
+                class="note"
+                data-reveal
+                style={`--reveal-delay:${i * 80}ms; --chip-color:${accents[i % accents.length]}`}
+              >
+                <div class="note-meta">
+                  <span class="note-category">{nota.data.categoria}</span>
+                  <span class="note-date">{fechaVisible(nota)}</span>
+                  {etiqueta && <span class="note-local">{etiqueta}</span>}
+                </div>
+
+                <div class="note-body">
+                  <h3 class="note-title">
+                    {tienePagina(nota) ? (
+                      <a class="note-link" href={`/notas/${nota.id}`}>
+                        {nota.data.titulo}
+                      </a>
+                    ) : (
+                      nota.data.titulo
+                    )}
+                  </h3>
+                  <p class="note-text">{nota.data.resumen}</p>
+                </div>
+
+                <span class="note-index" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .empty {
+    color: var(--ink-muted);
+  }
+
+  .notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .note {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 0.5rem 1.75rem;
+    padding: 1.6rem 1rem 1.6rem 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding-left 0.45s var(--ease), background 0.45s var(--ease);
+  }
+
+  @media (min-width: 800px) {
+    .note {
+      grid-template-columns: 11rem 1fr auto;
+      align-items: center;
+    }
+  }
+
+  /* Barra de acento que se despliega al pasar el cursor. */
+  .note::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.9rem;
+    bottom: 0.9rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--chip-color);
+    transform: scaleY(0);
+    transform-origin: 50% 0;
+    transition: transform 0.45s var(--ease);
+  }
+
+  .note:hover {
+    padding-left: 0.75rem;
+    background: var(--surface-sunken);
+  }
+
+  .note:hover::before {
+    transform: scaleY(1);
+  }
+
+  /* Enlace extendido: toda la fila es clicable. */
+  .note-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .note-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .note-category {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: color-mix(in srgb, var(--chip-color) 68%, var(--ink));
+  }
+
+  .note-date {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .note-local {
+    margin-top: 0.3rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    border: 1px dashed var(--line-strong);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .note-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-width: 60ch;
+  }
+
+  .note-title {
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    transition: color 0.3s var(--ease);
+  }
+
+  .note:hover .note-title {
+    color: color-mix(in srgb, var(--chip-color) 60%, var(--ink));
+  }
+
+  .note-text {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--ink-muted);
+  }
+
+  .note-index {
+    grid-row: 1;
+    grid-column: 2;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+  }
+
+  @media (min-width: 800px) {
+    .note-index {
+      grid-column: 3;
+    }
+  }
+</style>
