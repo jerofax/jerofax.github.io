@@ -1,90 +1,247 @@
 ---
-// src/components/Header.astro
-const navItems = [
-  { name: 'Inicio', href: '#inicio' },
-  { name: 'Sobre mí', href: '#sobre-mi' },
-  { name: 'Proyectos', href: '#proyectos' },
-  { name: 'Notas', href: '#notas' },
-  { name: 'Contacto', href: '#contacto' },
-];
+import { navItems } from "../data/profile";
 ---
 
-<header class="header-fijo">
-  <div class="header-contenedor">
-    
-    <!-- Logo "JR." -->
-    <a href="#inicio" class="logo-text">
-      JR<span class="punto-verde">.</span>
-    </a>
-
-    <!-- Menú Horizontal -->
-    <nav class="nav-list">
-      {navItems.map(item => (
-        <a href={item.href} class="nav-item">
-          {item.name}
-        </a>
-      ))}
+<header class="site-header" data-header data-scrolled="false">
+  <div class="header-inner shell">
+    <nav class="nav" aria-label="Navegación principal">
+      {
+        navItems.map((item) => (
+          <a href={item.href} class="nav-link" data-nav-link>
+            <span class="nav-link-text">{item.name}</span>
+          </a>
+        ))
+      }
     </nav>
 
+    <button
+      class="menu-btn"
+      type="button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-controls="menu-movil"
+      aria-label="Abrir menú"
+    >
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
   </div>
+
+  <div class="progress" data-progress aria-hidden="true"></div>
 </header>
 
+<div class="menu-panel" id="menu-movil" data-menu-panel hidden>
+  <nav class="menu-nav" aria-label="Navegación móvil">
+    {
+      navItems.map((item, i) => (
+        <a href={item.href} class="menu-link" style={`--i:${i}`}>
+          <span class="menu-index">{String(i + 1).padStart(2, "0")}</span>
+          {item.name}
+        </a>
+      ))
+    }
+  </nav>
+</div>
+
 <style>
-  /* CSS Scoped: Inmunidad total contra estilos globales */
-  .header-fijo {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 80px !important;
-    background-color: #1e293b !important; /* Gris oscuro pizarra */
-    border-bottom: 1px solid #334155 !important;
-    z-index: 9999 !important;
-    display: flex !important;
-    align-items: center !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+  /* Barra blanca siempre visible: la navegación se lee igual sobre
+     cualquier zona de la malla. */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: var(--header-h);
+    display: flex;
+    align-items: center;
+    background: var(--surface-raised);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border-bottom: 1px solid var(--line);
+    transition: box-shadow 0.4s var(--ease);
   }
 
-  .header-contenedor {
-    max-width: 72rem;
+  .site-header[data-scrolled="true"] {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  @media (min-width: 900px) {
+    .header-inner {
+      justify-content: center;
+    }
+  }
+
+  /* ── Navegación ───────────────────────────────────────────── */
+  .nav {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  @media (min-width: 900px) {
+    .nav {
+      display: flex;
+    }
+  }
+
+  .nav-link {
+    position: relative;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    transition: color 0.3s var(--ease);
+  }
+
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  }
+
+  .nav-link:hover,
+  .nav-link.is-active {
+    color: var(--ink);
+  }
+
+  .nav-link.is-active::before {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .nav-link-text {
+    position: relative;
+  }
+
+  /* ── Botón de menú (móvil) ────────────────────────────────── */
+  .menu-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+  }
+
+  @media (min-width: 900px) {
+    .menu-btn {
+      display: none;
+    }
+  }
+
+  .bar {
+    display: block;
+    width: 16px;
+    height: 1.8px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .menu-btn[aria-expanded="true"] .bar:first-child {
+    transform: translateY(3.4px) rotate(45deg);
+  }
+
+  .menu-btn[aria-expanded="true"] .bar:last-child {
+    transform: translateY(-3.4px) rotate(-45deg);
+  }
+
+  /* ── Progreso de lectura ──────────────────────────────────── */
+  .progress {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
     width: 100%;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    background: linear-gradient(
+      90deg,
+      var(--color-violet),
+      var(--color-azure),
+      var(--accent)
+    );
+  }
+
+  /* ── Panel móvil ──────────────────────────────────────────── */
+  .menu-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease);
   }
 
-  .logo-text {
-    font-family: monospace;
-    font-size: 1.5rem !important;
-    font-weight: 900 !important;
-    color: #ffffff !important; /* Blanco puro */
-    text-decoration: none !important;
-    letter-spacing: 0.05em;
+  .menu-panel[data-open="true"] {
+    opacity: 1;
   }
 
-  .punto-verde {
-    color: #22c55e !important;
-  }
-
-  .nav-list {
+  .menu-nav {
     display: flex;
-    align-items: center;
-    gap: 2rem;
-    overflow-x: auto;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: min(24rem, 82vw);
   }
 
-  .nav-item {
-    font-size: 1rem !important;
-    font-weight: 700 !important;
-    color: #ffffff !important; /* Blanco puro sin herencia morada */
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: color 0.2s ease;
+  .menu-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(1.6rem, 8vw, 2.25rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: color 0.3s var(--ease);
   }
 
-  .nav-item:hover {
-    color: #22c55e !important; /* Verde al pasar el cursor */
+  .menu-panel[data-open="true"] .menu-link {
+    animation: menu-in 0.5s var(--ease) forwards;
+    animation-delay: calc(var(--i) * 50ms + 60ms);
+  }
+
+  .menu-link:hover {
+    color: var(--accent-strong);
+  }
+
+  .menu-index {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent-strong);
+  }
+
+  @keyframes menu-in {
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>
