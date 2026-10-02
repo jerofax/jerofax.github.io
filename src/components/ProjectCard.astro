@@ -1,0 +1,196 @@
+---
+/* Tarjeta de proyecto. Extraída de Projects.astro para que las tarjetas
+   visibles y las que se despliegan con "Ver más" compartan marcado. */
+import { accents, type Project } from "../data/profile";
+
+interface Props {
+  proyecto: Project;
+  /** Posición en la lista: decide el color de acento. */
+  index: number;
+  /** Retraso del revelado, relativo a su grupo de tarjetas. */
+  delay: number;
+}
+
+const { proyecto, index, delay } = Astro.props;
+
+/* Los enlaces externos se abren en otra pestaña; los "#" pendientes no. */
+const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
+---
+
+<article
+  class="project"
+  data-spotlight
+  data-reveal
+  style={`--reveal-delay:${delay}ms; --chip-color:${accents[index % accents.length]}`}
+>
+  <div class="project-top">
+    <span class="status" data-state={proyecto.estado.toLowerCase().replace(" ", "-")}>
+      {proyecto.estado}
+    </span>
+  </div>
+
+  <h3 class="project-title">{proyecto.titulo}</h3>
+
+  {proyecto.destacado && <span class="award">{proyecto.destacado}</span>}
+
+  <p class="project-text">{proyecto.resumen}</p>
+
+  <ul class="project-tags">
+    {proyecto.tags.map((tag) => <li class="chip chip--mono">{tag}</li>)}
+  </ul>
+
+  {
+    proyecto.enlace && (
+      <a
+        class="btn btn--sm project-action"
+        href={proyecto.enlace.url}
+        {...(esExterno(proyecto.enlace.url)
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
+      >
+        {proyecto.enlace.texto}
+        <span class="sr-only"> — {proyecto.titulo}</span>
+      </a>
+    )
+  }
+</article>
+
+<style>
+  .project {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.6rem 1.5rem 1.4rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.35s var(--ease), border-color 0.35s var(--ease),
+      box-shadow 0.35s var(--ease);
+  }
+
+  .project::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      18rem circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--chip-color) 15%, transparent),
+      transparent 70%
+    );
+    transition: opacity 0.35s var(--ease);
+  }
+
+  /* Filo de color en el borde superior: identifica cada tarjeta. */
+  .project::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--chip-color);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.45s var(--ease);
+  }
+
+  .project:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--chip-color) 40%, var(--line));
+    box-shadow: var(--shadow-md);
+  }
+
+  .project:hover::before,
+  .project:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .project-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+  }
+
+  .status[data-state="en-curso"]::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .status[data-state="terminado"]::before {
+    background: var(--color-azure);
+  }
+
+  .project-title {
+    font-size: 1.2rem;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    transition: color 0.25s var(--ease);
+  }
+
+  .project:hover .project-title {
+    color: color-mix(in srgb, var(--chip-color) 60%, var(--ink));
+  }
+
+  .award {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-amber) 18%, transparent);
+    color: color-mix(in srgb, var(--color-amber) 65%, var(--ink));
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+
+  .project-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: auto 0 0;
+    padding: 0.6rem 0 0;
+  }
+
+  .project-tags .chip {
+    --chip-color: var(--ink-muted);
+  }
+
+  .project-action {
+    margin-top: 0.35rem;
+  }
+</style>
