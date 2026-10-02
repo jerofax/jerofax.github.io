@@ -1,5 +1,21 @@
 ---
-import { navItems } from "../data/profile";
+import { vistas, type Vista } from "../data/profile";
+
+interface Props {
+  vista: Vista;
+}
+
+const { vista } = Astro.props;
+
+/* "Inicio" siempre lleva al hero de la vista principal; "Contacto", a la
+   sección de contacto de la vista en la que se está. */
+const actual = vistas[vista].href;
+const navItems = [
+  { name: "Inicio", href: "/#inicio", activa: false },
+  { name: vistas["sobre-mi"].nombre, href: vistas["sobre-mi"].href, activa: vista === "sobre-mi" },
+  { name: vistas.academico.nombre, href: vistas.academico.href, activa: vista === "academico" },
+  { name: "Contacto", href: `${actual}#contacto`, activa: false },
+];
 ---
 
 <header class="site-header" data-header data-scrolled="false">
@@ -7,7 +23,11 @@ import { navItems } from "../data/profile";
     <nav class="nav" aria-label="Navegación principal">
       {
         navItems.map((item) => (
-          <a href={item.href} class="nav-link" data-nav-link>
+          <a
+            href={item.href}
+            class:list={["nav-link", item.activa && "is-active"]}
+            aria-current={item.activa ? "page" : undefined}
+          >
             <span class="nav-link-text">{item.name}</span>
           </a>
         ))
@@ -34,7 +54,12 @@ import { navItems } from "../data/profile";
   <nav class="menu-nav" aria-label="Navegación móvil">
     {
       navItems.map((item, i) => (
-        <a href={item.href} class="menu-link" style={`--i:${i}`}>
+        <a
+          href={item.href}
+          class="menu-link"
+          style={`--i:${i}`}
+          aria-current={item.activa ? "page" : undefined}
+        >
           <span class="menu-index">{String(i + 1).padStart(2, "0")}</span>
           {item.name}
         </a>
@@ -227,7 +252,8 @@ import { navItems } from "../data/profile";
     animation-delay: calc(var(--i) * 50ms + 60ms);
   }
 
-  .menu-link:hover {
+  .menu-link:hover,
+  .menu-link[aria-current="page"] {
     color: var(--accent-strong);
   }
 

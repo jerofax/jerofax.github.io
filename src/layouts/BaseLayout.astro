@@ -2,15 +2,18 @@
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import GeometricMesh from "../components/GeometricMesh.astro";
-import { site, intereses } from "../data/profile";
+import { ClientRouter } from "astro:transitions";
+import { site, intereses, type Vista } from "../data/profile";
 import "../styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
+  /** Vista a la que pertenece la página: decide el estado activo del menú. */
+  vista?: Vista;
 }
 
-const { title, description = site.description } = Astro.props;
+const { title, description = site.description, vista = "sobre-mi" } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 const home = new URL("/", Astro.site ?? Astro.url).href;
 
@@ -40,8 +43,13 @@ const persona = {
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" transition:animate="none">
   <head>
+    {/* Navegación del lado del cliente: al cambiar de vista sólo se
+        reemplaza el contenido, y la malla (transition:persist) sigue
+        animándose sin reiniciarse. transition:animate="none" en <html>
+        hace que el cambio sea instantáneo, sin animación añadida. */}
+    <ClientRouter />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
@@ -74,10 +82,12 @@ const persona = {
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
-    <GeometricMesh />
+    <div transition:persist="malla">
+      <GeometricMesh />
+    </div>
 
     <div class="page">
-      <Header />
+      <Header vista={vista} />
       <main id="contenido">
         <slot />
       </main>
@@ -86,7 +96,8 @@ const persona = {
 
     <script>
       import { initUI } from "../scripts/ui";
-      initUI();
+      /* Se dispara en la carga inicial y tras cada cambio de vista. */
+      document.addEventListener("astro:page-load", initUI);
     </script>
   </body>
 </html>

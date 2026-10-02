@@ -23,14 +23,17 @@ export const site = {
     "Portafolio de Jerónimo Restrepo Ramírez — matemático, científico de la computación y filósofo. Geometría, topología, machine learning científico y computación cuántica.",
 } as const;
 
-/** Con "/" delante para que también funcionen desde las páginas de notas. */
-export const navItems = [
-  { name: "Inicio", href: "/#inicio" },
-  { name: "Sobre mí", href: "/#sobre-mi" },
-  { name: "Proyectos", href: "/#proyectos" },
-  { name: "Notas", href: "/#notas" },
-  { name: "Contacto", href: "/#contacto" },
-] as const;
+/* ── Vistas ─────────────────────────────────────────────────────── */
+
+/** El portafolio tiene dos vistas, cada una en su propia ruta. */
+export type Vista = "sobre-mi" | "academico";
+
+export const vistas = {
+  "sobre-mi": { nombre: "Sobre mí", href: "/" },
+  /* Con barra final: el build genera /academico/index.html, y sin ella
+     GitHub Pages respondería primero con una redirección. */
+  academico: { nombre: "Académico", href: "/academico/" },
+} as const satisfies Record<Vista, { nombre: string; href: string }>;
 
 /* ── Sobre mí ───────────────────────────────────────────────────── */
 
@@ -38,43 +41,72 @@ export const intro =
   "Soy un apasionado por el conocimiento, curioso por naturaleza, me interesa entender cómo funcionan las cosas y explorar en lo más profundo hasta dónde pueden llevarse las ideas cuando se cruzan distintas formas de pensar.";
 
 export const intereses = [
-  "Geometría",
-  "Topología",
-  "Modelamiento matemático",
-  "Machine Learning",
-  "Computación cuántica",
+  "Matemáticas experimentales",
+  "Análisis funcional y EDP",
+  "Algoritmos",
+  "Análisis numérico",
+  "SciML",
+  "Modelamiento y optimización",
+  "Geometría y topología computacional",
   "Filosofía de la ciencia",
 ] as const;
 
 /** Misma paleta que la malla geométrica: morado, amarillo, verde, azul. */
 export const accents = ["#8b5cf6", "#eab308", "#22c55e", "#3b82f6"] as const;
 
+/** Un ítem "en exploración" se muestra con una insignia junto al texto. */
+export interface SkillItem {
+  texto: string;
+  enExploracion: true;
+}
+
 export interface Skill {
   num: string;
   titulo: string;
-  items: readonly string[];
+  items: readonly (string | SkillItem)[];
 }
 
 export const skills: readonly Skill[] = [
   {
     num: "01",
-    titulo: "Programación y Software",
-    items: ["Algoritmos", "Python", "MATLAB", "SQL", "Git", "Linux", "Excel"],
+    titulo: "Programación y software",
+    items: [
+      "Python",
+      "R",
+      "MATLAB",
+      "SQL (PostgreSQL)",
+      "Git",
+      "Linux",
+      "Excel",
+      "Diseño de bases de datos relacionales",
+      "Sistemas multiagente con LLMs",
+    ],
   },
   {
     num: "02",
-    titulo: "Matemáticas",
-    items: ["Análisis", "Topología", "Álgebra", "Geometría", "Modelación"],
+    titulo: "Matemáticas aplicadas y computación científica",
+    items: [
+      "Modelamiento matemático",
+      "Optimización lineal y no lineal",
+      "Análisis de datos y estadística",
+      "Computación científica (MATLAB, Python)",
+      "Ecuaciones diferenciales",
+      "Análisis de algoritmos",
+      { texto: "Machine learning científico (PINNs)", enExploracion: true },
+      { texto: "Computación cuántica", enExploracion: true },
+    ],
   },
   {
     num: "03",
-    titulo: "Computación",
+    titulo: "Competencias transversales",
     items: [
-      "Machine Learning",
-      "PINNs",
-      "Computación cuántica",
-      "Optimización",
-      "Computación científica",
+      "Comunicación técnica",
+      "Pensamiento crítico y argumentación",
+      "Liderazgo y trabajo en equipo",
+      "Resolución de problemas",
+      "Asertividad",
+      "Inglés (B1)",
+      "Latín clásico",
     ],
   },
 ];
@@ -118,6 +150,140 @@ export const formacionAcademica: readonly Education[] = [
     tipo: null,
   },
 ];
+
+/* ── Proyectos ──────────────────────────────────────────────────── */
+
+export interface ProjectLink {
+  url: string;
+  texto: string;
+}
+
+export interface Project {
+  titulo: string;
+  resumen: string;
+  estado: "Terminado" | "En curso" | "Planeado";
+  tags: readonly string[];
+  /** Insignia destacada junto al título (p. ej. un premio). */
+  destacado?: string;
+  enlace?: ProjectLink;
+}
+
+export const proyectos: readonly Project[] = [
+  {
+    titulo: "Base de datos relacional para operaciones bancarias",
+    resumen:
+      "Diseño e implementación de una base de datos para la gestión de operaciones bancarias. Modela clientes (personas naturales y jurídicas), cuentas, transacciones, sucursales y empleados. El modelo Entidad-Relación se transforma a un esquema relacional, implementado en PostgreSQL, con consultas formuladas también en álgebra y cálculo relacional.",
+    estado: "Terminado",
+    tags: ["Modelo E-R", "Modelo relacional", "PostgreSQL", "Álgebra relacional"],
+    // TODO: reemplazar "#" por la URL del repositorio.
+    enlace: { url: "#", texto: "Ver repositorio" },
+  },
+  {
+    titulo: "Sistema multiagente para decisiones económicas",
+    resumen:
+      "Simulación de la toma de decisiones estratégicas de una empresa automotriz ficticia sobre precios, producción y personal. Agentes especializados (consumidor, Estado, inversores y analista de crecimiento) evalúan cada decisión desde su perspectiva con herramientas personalizadas de estimación de precios, demanda, producción e inteligencia competitiva. Un agente escritor consolida los resultados en un reporte en Markdown.",
+    estado: "Terminado",
+    tags: ["Python", "LLMs", "Sistemas multiagente"],
+    destacado: "2.º lugar, hackathon UNAL",
+    enlace: {
+      url: "https://github.com/K4ztark/Sistema_Multiagentes-Hackathon",
+      texto: "Ver repositorio",
+    },
+  },
+  {
+    titulo: "Explog · Matemáticas experimentales",
+    resumen:
+      "Proyecto de investigación en matemáticas experimentales sobre Ricci Flow, la ecuación de evolución geométrica central en la demostración de la conjetura de Poincaré. Los resultados se publicarán en explog.xyz, con repositorio abierto.",
+    estado: "En curso",
+    tags: ["Flujo de Ricci", "Geometría diferencial", "Matemáticas experimentales"],
+    enlace: { url: "https://explog.xyz", texto: "Visitar explog.xyz" },
+  },
+  {
+    titulo: "Optimización no lineal en energías renovables",
+    resumen:
+      "Formulación y resolución de un problema de optimización no lineal en el sector de energías renovables.",
+    estado: "En curso",
+    tags: ["Optimización no lineal", "Modelamiento matemático", "Energías renovables"],
+    // TODO: reemplazar "#" por la URL del repositorio.
+    enlace: { url: "#", texto: "Ver repositorio" },
+  },
+  {
+    titulo: "Algoritmos: material de estudio",
+    resumen:
+      "Repositorio con textos de referencia, explicaciones de los métodos algorítmicos y resolución rigurosa de ejercicios, correspondiente a un curso de Algoritmos de nivel posgrado.",
+    estado: "En curso",
+    tags: ["Análisis de algoritmos", "Estructuras de datos", "Repositorio"],
+    // TODO: reemplazar "#" por la URL del repositorio.
+    enlace: { url: "#", texto: "Ver repositorio" },
+  },
+  {
+    titulo: "Gestor de información para asesores de seguros",
+    resumen:
+      "Aplicación web para asesores de seguros, con usuario y base de datos propios por asesor, acceso rápido a la información y búsqueda de clientes.",
+    estado: "Planeado",
+    tags: ["Aplicación web", "Bases de datos", "Multiusuario"],
+    // TODO: reemplazar "#" por la URL del repositorio.
+    enlace: { url: "#", texto: "Ver repositorio" },
+  },
+];
+
+/* ── Experiencia laboral ────────────────────────────────────────── */
+
+export interface WorkEntry {
+  /** Encabezado de la entrada (área de trabajo o lugar). */
+  titulo: string;
+  lugar?: string;
+  periodo: string;
+  cargo?: string;
+  funcion: string;
+  /** Viñetas (lista) o un único párrafo, como en el original. */
+  descripcion: string | readonly string[];
+  habilidades: string;
+}
+
+export const experienciaLaboral: readonly WorkEntry[] = [
+  {
+    titulo: "Competencias digitales",
+    lugar: "Biblioteca Efe Gómez",
+    periodo: "feb 2026–presente",
+    cargo: "Estudiante auxiliar",
+    funcion:
+      "Diseñar y dictar cursos de programación y herramientas digitales para toda la comunidad universitaria.",
+    descripcion: [
+      "~15 cursos diseñados desde cero en análisis de datos (Python, R, Excel) y computación científica (MATLAB, Python).",
+      "Sesiones virtuales con 100–300 asistentes por curso.",
+      "Mis cursos concentran más del 40% de las ~9000 asistencias del equipo en el semestre 2026-1.",
+      "Produzco material y grabaciones para el repositorio y la plataforma Unvirtual, construidos en equipo.",
+    ],
+    habilidades:
+      "Python, R, MATLAB, Excel; diseño instruccional; comunicación técnica con públicos heterogéneos; tutoría a gran escala; trabajo en equipo.",
+  },
+  {
+    titulo: "Remedios Café y Arte",
+    periodo: "jul–dic 2025",
+    cargo: "Mesero",
+    funcion: "Atención al cliente y operación de un entorno de servicio.",
+    descripcion: [
+      "Manejo de caja y dinero.",
+      "Control de inventarios.",
+      "Preparación de bebidas y cocina; barismo a nivel intermedio.",
+    ],
+    habilidades:
+      "Orientación al cliente, responsabilidad en el manejo de efectivo, control de inventarios, barismo.",
+  },
+  {
+    titulo: "Tutor académico independiente",
+    periodo: "2022–presente",
+    funcion:
+      "Acompañar el aprendizaje de matemáticas universitarias y de colegio.",
+    descripcion:
+      "Más de 100 estudiantes atendidos de forma individual, en modalidad virtual y presencial. Materias principales: matemáticas básicas, geometría vectorial, analítica y euclidiana, ecuaciones diferenciales, fundamentos de matemáticas y matemáticas discretas.",
+    habilidades:
+      "Explicar conceptos abstractos, adaptarse al nivel de cada estudiante, autonomía y gestión del tiempo.",
+  },
+];
+
+/* ── Académico ──────────────────────────────────────────────────── */
 
 export const trayectoriaIntro =
   "Mi pasión por el conocimiento se ha construido desde muy pequeño a través de las personas y experiencias que me han rodeado. Mi familia, especialmente mis padres, fue un motor fundamental para impulsarme a explorar, aprender y participar en todo aquello que despertara mi curiosidad; mis profesores, amigos y compañeros han seguido enriqueciendo ese proceso con nuevas perspectivas, preguntas y formas de entender el mundo. Esta trayectoria reúne algunas de las experiencias que más han contribuido a mi formación y que considero fundamentales en la persona y el estudiante que soy actualmente.";
@@ -206,89 +372,6 @@ export const trayectoriaAcademica: readonly TimelineEntry[] = [
     descripcion: [
       "Actualmente desarrollo mi formación universitaria en los pregrados de Matemáticas, Ciencias de la Computación y Filosofía, disciplinas que he ido integrando progresivamente a través de mi formación académica, proyectos y experiencias de investigación.",
     ],
-  },
-];
-
-export interface WorkEntry {
-  ano: string;
-  rol: string;
-  empresa: string | null;
-  descripcion: string;
-}
-
-export const trayectoriaLaboral: readonly WorkEntry[] = [
-  {
-    ano: "2026–presente",
-    rol: "Competencias digitales",
-    empresa: "Biblioteca Efe Gómez",
-    descripcion:
-      "Acompañamiento a estudiantes mediante tutorías, talleres y actividades de formación en competencias digitales enfocadas en la programación.",
-  },
-  {
-    ano: "2025",
-    rol: "Atención y servicio",
-    empresa: "Remedios Café y Arte",
-    descripcion:
-      "Experiencia laboral en atención al cliente y operación de un entorno de servicio.",
-  },
-  {
-    ano: "2022",
-    rol: "Tutor académico",
-    empresa: null,
-    descripcion:
-      "Desarrollo de tutorías remuneradas en matemáticas y programación, acompañando procesos de aprendizaje y resolución de problemas.",
-  },
-];
-
-/* ── Proyectos ──────────────────────────────────────────────────── */
-
-export interface Project {
-  titulo: string;
-  resumen: string;
-  ano: string;
-  estado: "Terminado" | "En curso" | "Explorando";
-  tags: readonly string[];
-  destacado?: string;
-  linkUrl?: string;
-  linkText?: string;
-}
-
-export const proyectos: readonly Project[] = [
-  {
-    titulo: "Sistema multiagente de IA",
-    resumen:
-      "Arquitectura de agentes de inteligencia artificial coordinados para resolver tareas complejas por descomposición. Desarrollado en equipo durante la hackathon de agentes de la Universidad Nacional de Colombia.",
-    ano: "2025",
-    estado: "Terminado",
-    tags: ["Python", "Agentes", "LLMs"],
-    destacado: "2.º lugar",
-    linkUrl: "https://github.com/K4ztark/Sistema_Multiagentes-Hackathon",
-    linkText: "Ver repositorio",
-  },
-  {
-    titulo: "Este portafolio",
-    resumen:
-      "Sitio estático construido con Astro, con una malla geométrica en canvas que respira de fondo y notas escritas en Markdown con soporte para LaTeX.",
-    ano: "2026",
-    estado: "En curso",
-    tags: ["Astro", "TypeScript", "Canvas"],
-  },
-  /* Plantillas: reemplázalas por proyectos reales o bórralas. */
-  {
-    titulo: "Ejemplo de proyecto 1",
-    resumen:
-      "Descripción breve del proyecto: qué problema aborda, cómo lo trabajaste y qué aprendiste en el proceso.",
-    ano: "2026",
-    estado: "Explorando",
-    tags: ["Etiqueta", "Etiqueta"],
-  },
-  {
-    titulo: "Ejemplo de proyecto 2",
-    resumen:
-      "Descripción breve del proyecto: qué problema aborda, cómo lo trabajaste y qué aprendiste en el proceso.",
-    ano: "2026",
-    estado: "Explorando",
-    tags: ["Etiqueta", "Etiqueta"],
   },
 ];
 

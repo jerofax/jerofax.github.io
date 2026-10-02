@@ -1,6 +1,9 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
 import { proyectos, accents } from "../data/profile";
+
+/* Los enlaces externos se abren en otra pestaña; los "#" pendientes no. */
+const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
 ---
 
 <section id="proyectos" class="section">
@@ -21,7 +24,6 @@ import { proyectos, accents } from "../data/profile";
             style={`--reveal-delay:${i * 80}ms; --chip-color:${accents[i % accents.length]}`}
           >
             <div class="project-top">
-              <span class="project-year">{proyecto.ano}</span>
               <span
                 class="status"
                 data-state={proyecto.estado.toLowerCase().replace(" ", "-")}
@@ -30,30 +32,7 @@ import { proyectos, accents } from "../data/profile";
               </span>
             </div>
 
-            <h3 class="project-title">
-              {
-                proyecto.linkUrl ? (
-                  /* Enlace extendido: sólo el título es interactivo para el
-                     lector de pantalla, pero toda la tarjeta es clicable. */
-                  <a
-                    class="project-link"
-                    href={proyecto.linkUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {proyecto.titulo}
-                    <span class="sr-only"> — {proyecto.linkText}</span>
-                  </a>
-                ) : (
-                  proyecto.titulo
-                )
-              }
-              {proyecto.linkUrl && (
-                <svg class="project-arrow" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M7 17L17 7M8 7h9v9" />
-                </svg>
-              )}
-            </h3>
+            <h3 class="project-title">{proyecto.titulo}</h3>
 
             {proyecto.destacado && <span class="award">{proyecto.destacado}</span>}
 
@@ -64,6 +43,19 @@ import { proyectos, accents } from "../data/profile";
                 <li class="chip chip--mono">{tag}</li>
               ))}
             </ul>
+
+            {proyecto.enlace && (
+              <a
+                class="btn btn--sm project-action"
+                href={proyecto.enlace.url}
+                {...(esExterno(proyecto.enlace.url)
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+              >
+                {proyecto.enlace.texto}
+                <span class="sr-only"> — {proyecto.titulo}</span>
+              </a>
+            )}
           </article>
         ))
       }
@@ -141,14 +133,6 @@ import { proyectos, accents } from "../data/profile";
     width: 100%;
   }
 
-  .project-year {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--ink-faint);
-  }
-
   .status {
     display: inline-flex;
     align-items: center;
@@ -178,14 +162,7 @@ import { proyectos, accents } from "../data/profile";
     background: var(--color-azure);
   }
 
-  .status[data-state="explorando"]::before {
-    background: var(--color-amber);
-  }
-
   .project-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     font-size: 1.2rem;
     letter-spacing: -0.03em;
     color: var(--ink);
@@ -194,32 +171,6 @@ import { proyectos, accents } from "../data/profile";
 
   .project:hover .project-title {
     color: color-mix(in srgb, var(--chip-color) 60%, var(--ink));
-  }
-
-  /* El pseudo-elemento cubre la tarjeta: clic en cualquier punto. */
-  .project-link::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-  }
-
-  .project-arrow {
-    width: 0.95rem;
-    height: 0.95rem;
-    flex-shrink: 0;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.45;
-    transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
-  }
-
-  .project:hover .project-arrow {
-    opacity: 1;
-    transform: translate(2px, -2px);
   }
 
   .award {
@@ -251,5 +202,9 @@ import { proyectos, accents } from "../data/profile";
 
   .project-tags .chip {
     --chip-color: var(--ink-muted);
+  }
+
+  .project-action {
+    margin-top: 0.35rem;
   }
 </style>

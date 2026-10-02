@@ -22,10 +22,14 @@ const { Content } = await render(nota);
 const etiqueta = etiquetaLocal(nota);
 ---
 
-<BaseLayout title={`${nota.data.titulo} | ${site.name}`} description={nota.data.resumen}>
+<BaseLayout
+  title={`${nota.data.titulo} | ${site.name}`}
+  description={nota.data.resumen}
+  vista="academico"
+>
   <section class="note-page">
     <article class="shell sheet article">
-      <a href="/#notas" class="back">
+      <a href="/academico/#notas" class="back">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"></path></svg>
         Todas las notas
       </a>

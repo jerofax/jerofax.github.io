@@ -1,14 +1,17 @@
 /**
  * ui.ts — Comportamiento de la interfaz: revelado al hacer scroll,
- * enlace activo de la navegación, progreso de lectura, menú móvil y
- * la luz que sigue al cursor sobre las tarjetas.
+ * progreso de lectura, menú móvil y la luz que sigue al cursor sobre
+ * las tarjetas.
  *
- * Todo el trabajo por frame pasa por IntersectionObserver o por un
- * rAF con guarda, así que no hay listeners de scroll que hagan layout.
+ * Se ejecuta en cada "astro:page-load": al cambiar de vista, el
+ * ClientRouter reemplaza el contenido sin recargar la página. Todo lo
+ * que se registra cuelga de un AbortController que se aborta en la
+ * siguiente navegación, así los listeners de window/document no se
+ * acumulan vista tras vista.
  */
 
 /* ── Revelado progresivo ────────────────────────────────────────── */
-function initReveal(): void {
+function initReveal(signal: AbortSignal): void {
   const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
   if (targets.length === 0) return;
 
@@ -29,63 +32,11 @@ function initReveal(): void {
   );
 
   for (const el of targets) observer.observe(el);
-}
-
-/* ── Enlace activo de la navegación ─────────────────────────────── */
-function initActiveNav(): void {
-  const links = Array.from(
-    document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]")
-  );
-  if (links.length === 0) return;
-
-  /* Los enlaces son "/#seccion" para que también funcionen desde las
-     páginas de notas; aquí sólo interesa el fragmento. */
-  const sections = links
-    .map((link) => document.getElementById(link.hash.slice(1)))
-    .filter((el): el is HTMLElement => el !== null);
-
-  /* En una página de nota no hay secciones que vigilar. */
-  if (sections.length === 0) return;
-
-  const visibility = new Map<string, number>();
-
-  const setActive = (id: string): void => {
-    for (const link of links) {
-      const isActive = link.hash === `#${id}`;
-      link.classList.toggle("is-active", isActive);
-      if (isActive) link.setAttribute("aria-current", "true");
-      else link.removeAttribute("aria-current");
-    }
-  };
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        visibility.set(entry.target.id, entry.intersectionRatio);
-      }
-      let best = "";
-      let bestRatio = 0;
-      for (const [id, ratio] of visibility) {
-        if (ratio > bestRatio) {
-          bestRatio = ratio;
-          best = id;
-        }
-      }
-      if (best) setActive(best);
-    },
-    {
-      /* Descontamos el header para que la sección "activa" sea la que
-         realmente se está leyendo, no la que asoma bajo la barra. */
-      rootMargin: "-20% 0px -55% 0px",
-      threshold: [0, 0.15, 0.35, 0.6, 1],
-    }
-  );
-
-  for (const section of sections) observer.observe(section);
+  signal.addEventListener("abort", () => observer.disconnect());
 }
 
 /* ── Progreso de lectura + estado del header ────────────────────── */
-function initScrollChrome(): void {
+function initScrollChrome(signal: AbortSignal): void {
   const header = document.querySelector<HTMLElement>("[data-header]");
   const progress = document.querySelector<HTMLElement>("[data-progress]");
   if (!header && !progress) return;
@@ -112,14 +63,14 @@ function initScrollChrome(): void {
       ticking = true;
       requestAnimationFrame(update);
     },
-    { passive: true }
+    { passive: true, signal }
   );
 
   update();
 }
 
 /* ── Menú móvil ─────────────────────────────────────────────────── */
-function initMobileMenu(): void {
+function initMobileMenu(signal: AbortSignal): void {
   const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
   const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
   if (!toggle || !panel) return;
@@ -132,30 +83,43 @@ function initMobileMenu(): void {
     document.body.classList.toggle("is-locked", open);
   };
 
-  toggle.addEventListener("click", () => {
-    setOpen(toggle.getAttribute("aria-expanded") !== "true");
-  });
+  toggle.addEventListener(
+    "click",
+    () => setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+    { signal }
+  );
 
-  panel.addEventListener("click", (event) => {
-    if ((event.target as HTMLElement).closest("a")) setOpen(false);
-  });
+  panel.addEventListener(
+    "click",
+    (event) => {
+      if ((event.target as HTMLElement).closest("a")) setOpen(false);
+    },
+    { signal }
+  );
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setOpen(false);
-  });
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Escape") setOpen(false);
+    },
+    { signal }
+  );
 
-  window.addEventListener("resize", () => {
-    if (window.innerWidth >= 900) setOpen(false);
-  });
+  window.addEventListener(
+    "resize",
+    () => {
+      if (window.innerWidth >= 900) setOpen(false);
+    },
+    { signal }
+  );
 
   setOpen(false);
 }
 
 /* ── Tarjetas con foco de luz que sigue al cursor ───────────────── */
-function initSpotlight(): void {
+function initSpotlight(signal: AbortSignal): void {
   if (window.matchMedia("(hover: none)").matches) return;
   const cards = document.querySelectorAll<HTMLElement>("[data-spotlight]");
-  if (cards.length === 0) return;
 
   for (const card of cards) {
     card.addEventListener(
@@ -165,29 +129,36 @@ function initSpotlight(): void {
         card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
         card.style.setProperty("--my", `${event.clientY - rect.top}px`);
       },
-      { passive: true }
+      { passive: true, signal }
     );
   }
 }
 
 /* ── Scroll suave, sólo después de cargar ───────────────────────── */
-/* Si estuviera activo desde el principio, al llegar a "/#notas" desde
-   una nota el navegador recorrería animada toda la página. */
-function enableSmoothScroll(): void {
+/* Si estuviera activo desde el principio, al llegar a "#notas" desde
+   una nota el navegador recorrería animada toda la página. Además, el
+   ClientRouter reemplaza los atributos de <html> en cada navegación,
+   así que la clase hay que volver a ponerla en cada vista. */
+function enableSmoothScroll(signal: AbortSignal): void {
   const enable = (): void => {
-    requestAnimationFrame(() =>
-      document.documentElement.classList.add("is-ready")
-    );
+    requestAnimationFrame(() => {
+      if (!signal.aborted) document.documentElement.classList.add("is-ready");
+    });
   };
   if (document.readyState === "complete") enable();
-  else window.addEventListener("load", enable, { once: true });
+  else window.addEventListener("load", enable, { once: true, signal });
 }
 
+let current: AbortController | null = null;
+
 export function initUI(): void {
-  enableSmoothScroll();
-  initReveal();
-  initActiveNav();
-  initScrollChrome();
-  initMobileMenu();
-  initSpotlight();
+  current?.abort();
+  current = new AbortController();
+  const { signal } = current;
+
+  enableSmoothScroll(signal);
+  initReveal(signal);
+  initScrollChrome(signal);
+  initMobileMenu(signal);
+  initSpotlight(signal);
 }
