@@ -168,16 +168,9 @@ export interface Project {
   enlace?: ProjectLink;
 }
 
+/* El orden importa: los cuatro primeros se ven siempre y el resto se
+   despliega con "Ver más" (ver PROYECTOS_VISIBLES en Projects.astro). */
 export const proyectos: readonly Project[] = [
-  {
-    titulo: "Base de datos relacional para operaciones bancarias",
-    resumen:
-      "Diseño e implementación de una base de datos para la gestión de operaciones bancarias. Modela clientes (personas naturales y jurídicas), cuentas, transacciones, sucursales y empleados. El modelo Entidad-Relación se transforma a un esquema relacional, implementado en PostgreSQL, con consultas formuladas también en álgebra y cálculo relacional.",
-    estado: "Terminado",
-    tags: ["Modelo E-R", "Modelo relacional", "PostgreSQL", "Álgebra relacional"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
-  },
   {
     titulo: "Sistema multiagente para decisiones económicas",
     resumen:
@@ -191,6 +184,15 @@ export const proyectos: readonly Project[] = [
     },
   },
   {
+    titulo: "Base de datos relacional para operaciones bancarias",
+    resumen:
+      "Diseño e implementación de una base de datos para la gestión de operaciones bancarias. Modela clientes (personas naturales y jurídicas), cuentas, transacciones, sucursales y empleados. El modelo Entidad-Relación se transforma a un esquema relacional, implementado en PostgreSQL, con consultas formuladas también en álgebra y cálculo relacional.",
+    estado: "Terminado",
+    tags: ["Modelo E-R", "Modelo relacional", "PostgreSQL", "Álgebra relacional"],
+    // TODO: reemplazar "#" por la URL del repositorio.
+    enlace: { url: "#", texto: "Ver repositorio" },
+  },
+  {
     titulo: "Explog · Matemáticas experimentales",
     resumen:
       "Proyecto de investigación en matemáticas experimentales sobre Ricci Flow, la ecuación de evolución geométrica central en la demostración de la conjetura de Poincaré. Los resultados se publicarán en explog.xyz, con repositorio abierto.",
@@ -199,20 +201,20 @@ export const proyectos: readonly Project[] = [
     enlace: { url: "https://explog.xyz", texto: "Visitar explog.xyz" },
   },
   {
-    titulo: "Optimización no lineal en energías renovables",
-    resumen:
-      "Formulación y resolución de un problema de optimización no lineal en el sector de energías renovables.",
-    estado: "En curso",
-    tags: ["Optimización no lineal", "Modelamiento matemático", "Energías renovables"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
-  },
-  {
     titulo: "Algoritmos: material de estudio",
     resumen:
       "Repositorio con textos de referencia, explicaciones de los métodos algorítmicos y resolución rigurosa de ejercicios, correspondiente a un curso de Algoritmos de nivel posgrado.",
     estado: "En curso",
     tags: ["Análisis de algoritmos", "Estructuras de datos", "Repositorio"],
+    // TODO: reemplazar "#" por la URL del repositorio.
+    enlace: { url: "#", texto: "Ver repositorio" },
+  },
+  {
+    titulo: "Optimización no lineal en energías renovables",
+    resumen:
+      "Formulación y resolución de un problema de optimización no lineal en el sector de energías renovables.",
+    estado: "En curso",
+    tags: ["Optimización no lineal", "Modelamiento matemático", "Energías renovables"],
     // TODO: reemplazar "#" por la URL del repositorio.
     enlace: { url: "#", texto: "Ver repositorio" },
   },

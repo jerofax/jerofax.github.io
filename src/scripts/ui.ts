@@ -134,6 +134,33 @@ function initSpotlight(signal: AbortSignal): void {
   }
 }
 
+/* ── Botones "Ver más" / "Ver menos" ────────────────────────────── */
+/* Un <button> real con aria-expanded y aria-controls: Enter y Espacio
+   funcionan sin código extra. El panel se anima por CSS (data-open). */
+function initShowMore(signal: AbortSignal): void {
+  const toggles = document.querySelectorAll<HTMLButtonElement>("[data-more-toggle]");
+
+  for (const toggle of toggles) {
+    const panel = document.getElementById(toggle.getAttribute("aria-controls") ?? "");
+    const label = toggle.querySelector<HTMLElement>("[data-more-label]");
+    if (!panel) continue;
+
+    toggle.addEventListener(
+      "click",
+      () => {
+        const open = toggle.getAttribute("aria-expanded") !== "true";
+        toggle.setAttribute("aria-expanded", String(open));
+        panel.dataset.open = String(open);
+        if (label) {
+          label.textContent =
+            (open ? toggle.dataset.labelOpen : toggle.dataset.labelClosed) ?? label.textContent;
+        }
+      },
+      { signal }
+    );
+  }
+}
+
 /* ── Scroll suave, sólo después de cargar ───────────────────────── */
 /* Si estuviera activo desde el principio, al llegar a "#notas" desde
    una nota el navegador recorrería animada toda la página. Además, el
@@ -161,4 +188,5 @@ export function initUI(): void {
   initScrollChrome(signal);
   initMobileMenu(signal);
   initSpotlight(signal);
+  initShowMore(signal);
 }

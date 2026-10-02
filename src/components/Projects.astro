@@ -1,9 +1,13 @@
 ---
 import SectionHeading from "./SectionHeading.astro";
-import { proyectos, accents } from "../data/profile";
+import ProjectCard from "./ProjectCard.astro";
+import { proyectos } from "../data/profile";
 
-/* Los enlaces externos se abren en otra pestaña; los "#" pendientes no. */
-const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
+/* Cuántos proyectos se ven sin desplegar "Ver más". */
+const PROYECTOS_VISIBLES = 4;
+
+const visibles = proyectos.slice(0, PROYECTOS_VISIBLES);
+const extra = proyectos.slice(PROYECTOS_VISIBLES);
 ---
 
 <section id="proyectos" class="section">
@@ -15,51 +19,57 @@ const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
     />
 
     <div class="grid">
-      {
-        proyectos.map((proyecto, i) => (
-          <article
-            class="project"
-            data-spotlight
-            data-reveal
-            style={`--reveal-delay:${i * 80}ms; --chip-color:${accents[i % accents.length]}`}
-          >
-            <div class="project-top">
-              <span
-                class="status"
-                data-state={proyecto.estado.toLowerCase().replace(" ", "-")}
-              >
-                {proyecto.estado}
-              </span>
-            </div>
-
-            <h3 class="project-title">{proyecto.titulo}</h3>
-
-            {proyecto.destacado && <span class="award">{proyecto.destacado}</span>}
-
-            <p class="project-text">{proyecto.resumen}</p>
-
-            <ul class="project-tags">
-              {proyecto.tags.map((tag) => (
-                <li class="chip chip--mono">{tag}</li>
-              ))}
-            </ul>
-
-            {proyecto.enlace && (
-              <a
-                class="btn btn--sm project-action"
-                href={proyecto.enlace.url}
-                {...(esExterno(proyecto.enlace.url)
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-              >
-                {proyecto.enlace.texto}
-                <span class="sr-only"> — {proyecto.titulo}</span>
-              </a>
-            )}
-          </article>
-        ))
-      }
+      {visibles.map((proyecto, i) => <ProjectCard proyecto={proyecto} index={i} delay={i * 80} />)}
     </div>
+
+    {
+      extra.length > 0 && (
+        <>
+          {/* Plegado con grid-template-rows (0fr → 1fr) para animar la altura
+              sin medirla. Cerrado queda con visibility: hidden, así sus
+              enlaces no reciben foco ni los anuncia un lector de pantalla. */}
+          <div class="more" id="proyectos-mas" data-open="false">
+            <div class="more-inner">
+              <div class="grid more-grid">
+                {extra.map((proyecto, i) => (
+                  <ProjectCard
+                    proyecto={proyecto}
+                    index={PROYECTOS_VISIBLES + i}
+                    delay={i * 80}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="more-actions">
+            <button
+              type="button"
+              class="btn btn--ghost more-toggle"
+              aria-expanded="false"
+              aria-controls="proyectos-mas"
+              data-more-toggle
+              data-label-closed="Ver más"
+              data-label-open="Ver menos"
+            >
+              <span data-more-label>Ver más</span>
+              <span class="sr-only"> proyectos</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Sin JavaScript no hay forma de desplegar: se muestran todos. */}
+          <noscript>
+            <style is:inline>
+              #proyectos-mas { grid-template-rows: 1fr !important; opacity: 1 !important; visibility: visible !important; }
+              [data-more-toggle] { display: none !important; }
+            </style>
+          </noscript>
+        </>
+      )
+    }
   </div>
 </section>
 
@@ -70,141 +80,54 @@ const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
     gap: 1.1rem;
   }
 
-  .project {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1.6rem 1.5rem 1.4rem;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: transform 0.35s var(--ease), border-color 0.35s var(--ease),
-      box-shadow 0.35s var(--ease);
-  }
-
-  .project::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+  /* ── Ver más ──────────────────────────────────────────────── */
+  .more {
+    display: grid;
+    grid-template-rows: 0fr;
     opacity: 0;
-    background: radial-gradient(
-      18rem circle at var(--mx, 50%) var(--my, 50%),
-      color-mix(in srgb, var(--chip-color) 15%, transparent),
-      transparent 70%
-    );
-    transition: opacity 0.35s var(--ease);
+    visibility: hidden;
+    /* Al cerrar, visibility cambia al final para no cortar la transición. */
+    transition: grid-template-rows 0.5s var(--ease), opacity 0.35s var(--ease),
+      visibility 0s linear 0.5s;
   }
 
-  /* Filo de color en el borde superior: identifica cada tarjeta. */
-  .project::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--chip-color);
-    transform: scaleX(0);
-    transform-origin: 0 50%;
-    transition: transform 0.45s var(--ease);
-  }
-
-  .project:hover {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--chip-color) 40%, var(--line));
-    box-shadow: var(--shadow-md);
-  }
-
-  .project:hover::before,
-  .project:hover::after {
+  .more[data-open="true"] {
+    grid-template-rows: 1fr;
     opacity: 1;
-    transform: scaleX(1);
+    visibility: visible;
+    transition: grid-template-rows 0.5s var(--ease), opacity 0.45s var(--ease) 0.05s,
+      visibility 0s linear 0s;
   }
 
-  .project-top {
+  .more-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* El hueco entre los dos grupos va dentro del plegado: cerrado, no deja
+     espacio; abierto, iguala el espacio entre tarjetas. */
+  .more-grid {
+    padding-top: 1.1rem;
+  }
+
+  .more-actions {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
+    justify-content: center;
+    margin-top: 1.75rem;
   }
 
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
+  .more-toggle svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.35s var(--ease);
   }
 
-  .status::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--ink-faint);
-  }
-
-  .status[data-state="en-curso"]::before {
-    background: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
-  }
-
-  .status[data-state="terminado"]::before {
-    background: var(--color-azure);
-  }
-
-  .project-title {
-    font-size: 1.2rem;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    transition: color 0.25s var(--ease);
-  }
-
-  .project:hover .project-title {
-    color: color-mix(in srgb, var(--chip-color) 60%, var(--ink));
-  }
-
-  .award {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--color-amber) 18%, transparent);
-    color: color-mix(in srgb, var(--color-amber) 65%, var(--ink));
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-  }
-
-  .project-text {
-    font-size: 0.92rem;
-    line-height: 1.65;
-    color: var(--ink-soft);
-  }
-
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    list-style: none;
-    margin: auto 0 0;
-    padding: 0.6rem 0 0;
-  }
-
-  .project-tags .chip {
-    --chip-color: var(--ink-muted);
-  }
-
-  .project-action {
-    margin-top: 0.35rem;
+  .more-toggle[aria-expanded="true"] svg {
+    transform: rotate(180deg);
   }
 </style>
