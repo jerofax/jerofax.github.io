@@ -88,7 +88,7 @@ html {
 }
 
 /* El scroll suave se activa sólo tras la carga (ui.ts). Si estuviera
-   desde el principio, al volver de una nota a "/#notas" el navegador
+   desde el principio, al volver de una nota a "#notas" el navegador
    recorrería animada toda la página hasta llegar. */
 html.is-ready {
   scroll-behavior: smooth;

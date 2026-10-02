@@ -1,10 +1,17 @@
 ---
 import { site } from "../data/profile";
+
+interface Props {
+  /** Numeración de la sección dentro de la vista en la que aparece. */
+  eyebrow?: string;
+}
+
+const { eyebrow = "04 — Contacto" } = Astro.props;
 ---
 
 <section id="contacto" class="section">
   <div class="shell sheet panel" data-spotlight data-reveal>
-    <p class="eyebrow">04 — Contacto</p>
+    <p class="eyebrow">{eyebrow}</p>
 
     <h2 class="headline">
       Hablemos de<br />

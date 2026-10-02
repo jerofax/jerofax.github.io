@@ -1,0 +1,158 @@
+---
+/* Experiencia laboral: antes era un sub-bloque de About.astro; ahora es
+   su propia sección en la vista "Sobre mí", con el mismo estilo de
+   entrada (raíl a la izquierda, periodo en monoespaciada). */
+import SectionHeading from "./SectionHeading.astro";
+import { experienciaLaboral } from "../data/profile";
+---
+
+<section id="experiencia" class="section">
+  <div class="shell sheet">
+    <SectionHeading eyebrow="03 — Experiencia" title="Experiencia laboral" />
+
+    <ol class="work">
+      {
+        experienciaLaboral.map((item, i) => (
+          <li class="work-item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <span class="work-year">{item.periodo}</span>
+            <div class="work-body">
+              <h3 class="work-role">{item.titulo}</h3>
+              {item.lugar && <p class="work-company">{item.lugar}</p>}
+              {item.cargo && <p class="work-position">{item.cargo}</p>}
+
+              <dl class="work-details">
+                <div>
+                  <dt>Función principal:</dt>
+                  <dd>{item.funcion}</dd>
+                </div>
+                <div>
+                  <dt>Descripción:</dt>
+                  <dd>
+                    {typeof item.descripcion === "string" ? (
+                      item.descripcion
+                    ) : (
+                      <ul>
+                        {item.descripcion.map((punto) => (
+                          <li>{punto}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Habilidades:</dt>
+                  <dd>{item.habilidades}</dd>
+                </div>
+              </dl>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .work {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .work-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.35rem 1.5rem;
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--line);
+    transition: border-color 0.3s var(--ease);
+  }
+
+  .work-item:hover {
+    border-left-color: var(--accent);
+  }
+
+  @media (min-width: 700px) {
+    .work-item {
+      grid-template-columns: 8.5rem 1fr;
+    }
+  }
+
+  .work-year {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    padding-top: 0.35rem;
+  }
+
+  .work-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 62ch;
+  }
+
+  .work-role {
+    font-size: 1.25rem;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  .work-company {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-strong);
+  }
+
+  .work-position {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--ink-muted);
+  }
+
+  .work-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.65rem 0 0;
+    font-size: clamp(0.95rem, 1.3vw, 1.02rem);
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  /* Astro elimina el espacio entre </dt> y <dd> al compilar, así que la
+     separación entre la etiqueta y el texto va por CSS. */
+  .work-details dt {
+    display: inline;
+    margin-right: 0.3em;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .work-details dd {
+    display: inline;
+    margin: 0;
+  }
+
+  /* Viñetas explícitas: el reset de Tailwind las quita. Se usa la
+     propiedad larga porque el minificador reescribe el atajo
+     "list-style: disc" como "list-style: outside". */
+  .work-details ul {
+    margin: 0.3rem 0 0;
+    padding-left: 1.2rem;
+    list-style-type: disc;
+  }
+
+  .work-details li + li {
+    margin-top: 0.25rem;
+  }
+
+  .work-details li::marker {
+    color: var(--accent);
+  }
+</style>

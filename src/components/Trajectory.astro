@@ -1,0 +1,259 @@
+---
+/* Trayectoria académica: movida intacta desde About.astro a la vista
+   "Académico". Mismo marcado y mismos estilos. */
+import SectionHeading from "./SectionHeading.astro";
+import { trayectoriaIntro, trayectoriaAcademica } from "../data/profile";
+---
+
+<section id="trayectoria" class="section">
+  <div class="shell sheet">
+    <SectionHeading eyebrow="01 — Trayectoria" title="Trayectoria académica" />
+
+    <p class="prose-p trajectory-intro" data-reveal>{trayectoriaIntro}</p>
+
+    <div class="timeline">
+      {
+        trayectoriaAcademica.map((item) => (
+          <details class="event" data-reveal>
+            <summary class="event-summary">
+              <span class="event-year">{item.ano}</span>
+              <span class="event-title">{item.titulo}</span>
+              <span class="event-icon" aria-hidden="true">&gt;_</span>
+            </summary>
+
+            <div class="event-body">
+              {item.descripcion.map((parrafo) => (
+                <p class="prose-p">{parrafo}</p>
+              ))}
+
+              {item.imagenes && (
+                <div
+                  class:list={[
+                    "event-media",
+                    item.imagenes.length > 1 && "event-media--grid",
+                  ]}
+                >
+                  {item.imagenes.map((img) => (
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ))}
+                </div>
+              )}
+
+              {item.destacado && (
+                <aside class="highlight">
+                  <span class="highlight-label">Punto clave</span>
+                  <p class="highlight-text">{item.destacado}</p>
+                </aside>
+              )}
+
+              {item.linkUrl && (
+                <a
+                  href={item.linkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn--sm"
+                >
+                  {item.linkText}
+                </a>
+              )}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .trajectory-intro {
+    max-width: 68ch;
+    margin-bottom: 2.5rem;
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-left: 1.35rem;
+  }
+
+  /* Raíl vertical que hilvana los eventos. */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    left: 3px;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--line-strong) 12%,
+      var(--line-strong) 88%,
+      transparent
+    );
+  }
+
+  .event {
+    position: relative;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .event:last-child {
+    border-bottom: 0;
+  }
+
+  .event::before {
+    content: "";
+    position: absolute;
+    left: -1.35rem;
+    top: 2.05rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--line-strong);
+    transition: border-color 0.3s var(--ease), background 0.3s var(--ease);
+  }
+
+  .event[open]::before {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .event-summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 0.2rem 1rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .event-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .event-year {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+  }
+
+  .event-title {
+    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    transition: color 0.25s var(--ease);
+  }
+
+  .event-summary:hover .event-title {
+    color: var(--accent-strong);
+  }
+
+  /* El símbolo de consola gira 90° y se pone verde al abrirse. */
+  .event-icon {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--ink-faint);
+    transition: transform 0.35s var(--ease), color 0.3s var(--ease);
+  }
+
+  .event-summary:hover .event-icon {
+    color: var(--ink-muted);
+  }
+
+  .event[open] .event-icon {
+    transform: rotate(90deg);
+    color: var(--accent);
+  }
+
+  .event-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.1rem;
+    margin-top: 1.1rem;
+    animation: unfold 0.45s var(--ease);
+  }
+
+  @keyframes unfold {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  .event-body .prose-p {
+    max-width: 68ch;
+  }
+
+  .event-media {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    width: 100%;
+    max-width: 34rem;
+  }
+
+  @media (min-width: 640px) {
+    .event-media--grid {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 46rem;
+    }
+  }
+
+  .event-media img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  }
+
+  .event-media img:hover {
+    transform: scale(1.015);
+    box-shadow: var(--shadow-md);
+  }
+
+  .highlight {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1rem 1.2rem;
+    max-width: 62ch;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+  }
+
+  .highlight-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+  }
+
+  .highlight-text {
+    font-size: 0.98rem;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+</style>

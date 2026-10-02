@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import Trajectory from "../components/Trajectory.astro";
+import Notes from "../components/Notes.astro";
+import Contact from "../components/Contact.astro";
+import { site } from "../data/profile";
+---
+
+<BaseLayout title={`Académico | ${site.fullName}`} vista="academico">
+  <Hero vista="academico" />
+  <Trajectory />
+  <Notes />
+  <Contact eyebrow="03 — Contacto" />
+</BaseLayout>
