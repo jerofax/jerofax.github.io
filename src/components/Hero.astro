@@ -7,6 +7,10 @@ interface Props {
 
 const { vista } = Astro.props;
 
+/* Proyectos sólo existe en la vista "Sobre mí": desde ahí el botón baja
+   con scroll suave; desde "Académico" lleva a esa vista, a la sección. */
+const proyectosHref = vista === "sobre-mi" ? "#proyectos" : `${vistas["sobre-mi"].href}#proyectos`;
+
 /* Enlace discreto, junto a los botones, para pasar a la otra vista. */
 const cambio =
   vista === "academico"
@@ -53,6 +57,7 @@ const cambio =
             <path d="M5 12h14M13 6l6 6-6 6"></path>
           </svg>
         </a>
+        <a href={proyectosHref} class="btn btn--ghost">Ver proyectos</a>
         <a
           href={site.cv}
           target="_blank"
