@@ -186,11 +186,13 @@ export const proyectos: readonly Project[] = [
   {
     titulo: "Base de datos relacional para operaciones bancarias",
     resumen:
-      "Diseño e implementación de una base de datos para la gestión de operaciones bancarias. Modela clientes (personas naturales y jurídicas), cuentas, transacciones, sucursales y empleados. El modelo Entidad-Relación se transforma a un esquema relacional, implementado en PostgreSQL, con consultas formuladas también en álgebra y cálculo relacional.",
+      "Diseño e implementación, en equipo, de una base de datos para la gestión de operaciones bancarias. Modela clientes, cuentas, créditos, transacciones, sucursales, empleados y servicios adicionales. El modelo Entidad-Relación se transforma a un esquema relacional, implementado en SQL Server, con consultas formuladas también en álgebra y cálculo relacional.",
     estado: "Terminado",
-    tags: ["Modelo E-R", "Modelo relacional", "PostgreSQL", "Álgebra relacional"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
+    tags: ["Modelo E-R", "Modelo relacional", "SQL Server", "Álgebra relacional"],
+    enlace: {
+      url: "https://github.com/jerofax/bd-operaciones-bancarias",
+      texto: "Ver repositorio",
+    },
   },
   {
     titulo: "Explog · Matemáticas experimentales",
