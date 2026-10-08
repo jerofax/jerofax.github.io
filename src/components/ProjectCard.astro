@@ -40,17 +40,21 @@ const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
   </ul>
 
   {
-    proyecto.enlace && (
-      <a
-        class="btn btn--sm project-action"
-        href={proyecto.enlace.url}
-        {...(esExterno(proyecto.enlace.url)
-          ? { target: "_blank", rel: "noopener noreferrer" }
-          : {})}
-      >
-        {proyecto.enlace.texto}
-        <span class="sr-only"> — {proyecto.titulo}</span>
-      </a>
+    proyecto.enlaces && proyecto.enlaces.length > 0 && (
+      <div class="project-actions">
+        {proyecto.enlaces.map((enlace) => (
+          <a
+            class="btn btn--sm"
+            href={enlace.url}
+            {...(esExterno(enlace.url)
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
+          >
+            {enlace.texto}
+            <span class="sr-only"> — {proyecto.titulo}</span>
+          </a>
+        ))}
+      </div>
     )
   }
 </article>
@@ -190,7 +194,12 @@ const esExterno = (url: string): boolean => /^https?:\/\//.test(url);
     --chip-color: var(--ink-muted);
   }
 
-  .project-action {
+  /* Varios botones (repositorio, sitio web): en fila y, si no caben,
+     bajan a la línea siguiente sin desbordar la tarjeta. */
+  .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-top: 0.35rem;
   }
 </style>
