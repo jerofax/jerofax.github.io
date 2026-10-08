@@ -165,58 +165,88 @@ export interface Project {
   tags: readonly string[];
   /** Insignia destacada junto al título (p. ej. un premio). */
   destacado?: string;
-  enlace?: ProjectLink;
+  /** Botones bajo la tarjeta (repositorio, sitio web...). */
+  enlaces?: readonly ProjectLink[];
 }
 
 /* El orden importa: los cuatro primeros se ven siempre y el resto se
-   despliega con "Ver más" (ver PROYECTOS_VISIBLES en Projects.astro). */
+   despliega con "Ver más" (ver PROYECTOS_VISIBLES en Projects.astro).
+   Las descripciones resumen el README de cada repositorio. */
 export const proyectos: readonly Project[] = [
-  {
-    titulo: "Sistema multiagente para decisiones económicas",
-    resumen:
-      "Simulación de la toma de decisiones estratégicas de una empresa automotriz ficticia sobre precios, producción y personal. Agentes especializados (consumidor, Estado, inversores y analista de crecimiento) evalúan cada decisión desde su perspectiva con herramientas personalizadas de estimación de precios, demanda, producción e inteligencia competitiva. Un agente escritor consolida los resultados en un reporte en Markdown.",
-    estado: "Terminado",
-    tags: ["Python", "LLMs", "Sistemas multiagente"],
-    destacado: "2.º lugar, hackathon UNAL",
-    enlace: {
-      url: "https://github.com/K4ztark/Sistema_Multiagentes-Hackathon",
-      texto: "Ver repositorio",
-    },
-  },
-  {
-    titulo: "Base de datos relacional para operaciones bancarias",
-    resumen:
-      "Diseño e implementación de una base de datos para la gestión de operaciones bancarias. Modela clientes (personas naturales y jurídicas), cuentas, transacciones, sucursales y empleados. El modelo Entidad-Relación se transforma a un esquema relacional, implementado en PostgreSQL, con consultas formuladas también en álgebra y cálculo relacional.",
-    estado: "Terminado",
-    tags: ["Modelo E-R", "Modelo relacional", "PostgreSQL", "Álgebra relacional"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
-  },
   {
     titulo: "Explog · Matemáticas experimentales",
     resumen:
-      "Proyecto de investigación en matemáticas experimentales sobre Ricci Flow, la ecuación de evolución geométrica central en la demostración de la conjetura de Poincaré. Los resultados se publicarán en explog.xyz, con repositorio abierto.",
+      "Repositorio del curso de posgrado de Matemáticas Experimentales: usar la computadora como laboratorio para plantear una pregunta, programar el experimento y dejar que los datos sugieran o tumben conjeturas. Reúne tres temas: juegos espaciales, el teorema de Gauss-Bonnet discreto y el flujo de Ricci combinatorio sobre superficies trianguladas, que redistribuye la curvatura sin cambiar su suma total.",
     estado: "En curso",
-    tags: ["Flujo de Ricci", "Geometría diferencial", "Matemáticas experimentales"],
-    enlace: { url: "https://explog.xyz", texto: "Visitar explog.xyz" },
-  },
-  {
-    titulo: "Algoritmos: material de estudio",
-    resumen:
-      "Repositorio con textos de referencia, explicaciones de los métodos algorítmicos y resolución rigurosa de ejercicios, correspondiente a un curso de Algoritmos de nivel posgrado.",
-    estado: "En curso",
-    tags: ["Análisis de algoritmos", "Estructuras de datos", "Repositorio"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
+    tags: ["Flujo de Ricci", "Gauss-Bonnet discreto", "Matemáticas experimentales"],
+    enlaces: [
+      { url: "https://github.com/jerofax/explog", texto: "Ver repositorio" },
+      { url: "https://explog.xyz", texto: "Visitar explog.xyz" },
+    ],
   },
   {
     titulo: "Optimización no lineal en energías renovables",
     resumen:
-      "Formulación y resolución de un problema de optimización no lineal en el sector de energías renovables.",
+      "Estudia reemplazar las válvulas reductoras de presión de una red de agua por bombas operando como turbinas (PAT) para recuperar energía, y formula su operación como un problema de programación no lineal: velocidad de rotación, caudal desviado y carga estrangulada, sujetos a las curvas de la máquina y a las condiciones de la red. Parte de Manservigi et al. (2025) y explora una regulación híbrida. Proyecto individual del curso de posgrado de Programación no Lineal.",
     estado: "En curso",
-    tags: ["Optimización no lineal", "Modelamiento matemático", "Energías renovables"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
+    tags: ["Programación no lineal", "Bombas como turbinas", "Redes de agua"],
+    enlaces: [
+      { url: "https://github.com/jerofax/pat-energy-recovery-nlp", texto: "Ver repositorio" },
+    ],
+  },
+  {
+    titulo: "Sistema multiagente para decisiones económicas",
+    resumen:
+      "Simulación de las decisiones estratégicas de Unautos, una empresa de autos ficticia, sobre precios, producción y personal. Agentes basados en modelos de lenguaje (consumidor, Estado, inversores y analista de crecimiento) evalúan cada decisión desde su perspectiva para anticipar la reacción del mercado, y un agente escritor reúne sus análisis en un reporte en Markdown.",
+    estado: "Terminado",
+    tags: ["Python", "LLMs", "Sistemas multiagente"],
+    destacado: "2.º lugar, hackathon UNAL",
+    enlaces: [
+      {
+        url: "https://github.com/K4ztark/Sistema_Multiagentes-Hackathon",
+        texto: "Ver repositorio",
+      },
+    ],
+  },
+  {
+    titulo: "Algoritmos: material de estudio",
+    resumen:
+      "Material del curso de posgrado de Algoritmos: notas expositivas sobre los métodos, problemas resueltos con rigor y una guía de los textos de referencia. Escrito para entender a fondo y para que le sirva a quien esté estudiando lo mismo; el material propio se publica bajo licencia CC BY 4.0.",
+    estado: "En curso",
+    tags: ["Análisis de algoritmos", "Problemas resueltos", "CC BY 4.0"],
+    enlaces: [
+      { url: "https://github.com/jerofax/algoritmos-material", texto: "Ver repositorio" },
+    ],
+  },
+  {
+    titulo: "Este portafolio",
+    resumen:
+      "El sitio que estás viendo: un portafolio estático hecho con Astro y TypeScript, con una malla geométrica en canvas que respira de fondo y se mantiene sin reiniciarse al cambiar entre las vistas, y notas en Markdown con soporte para LaTeX (KaTeX). Se publica en GitHub Pages con GitHub Actions.",
+    estado: "En curso",
+    tags: ["Astro", "TypeScript", "Canvas"],
+    enlaces: [
+      { url: "https://github.com/jerofax/jerofax.github.io", texto: "Ver repositorio" },
+    ],
+  },
+  {
+    titulo: "Teoría de la computación: ejercicios",
+    resumen:
+      "Tres ejercicios de los parciales de Introducción a la Teoría de la Computación, resueltos en cuadernos de Google Colab que convierten la definición formal en código: simulación de un DFA, Forma Normal de Chomsky con el algoritmo CYK y reconstrucción del árbol de derivación, y equivalencia de dos DFA mediante su diferencia simétrica.",
+    estado: "Terminado",
+    tags: ["Autómatas finitos", "CYK", "Python"],
+    enlaces: [
+      { url: "https://github.com/jerofax/teoria-de-la-computacion", texto: "Ver repositorio" },
+    ],
+  },
+  {
+    titulo: "Base de datos relacional para operaciones bancarias",
+    resumen:
+      "Diseño de una base de datos relacional para las operaciones internas de una red de oficinas bancarias: clientes, cuentas, créditos, transacciones, sucursales, empleados y servicios adicionales. Va del modelo Entidad-Relación al esquema relacional, se implementa en SQL Server y se valida con 12 consultas en álgebra y cálculo relacional. Proyecto en equipo del curso Bases de Datos I (UNAL).",
+    estado: "Terminado",
+    tags: ["Modelo E-R", "Modelo relacional", "SQL Server", "Álgebra relacional"],
+    enlaces: [
+      { url: "https://github.com/jerofax/bd-operaciones-bancarias", texto: "Ver repositorio" },
+    ],
   },
   {
     titulo: "Gestor de información para asesores de seguros",
@@ -224,8 +254,8 @@ export const proyectos: readonly Project[] = [
       "Aplicación web para asesores de seguros, con usuario y base de datos propios por asesor, acceso rápido a la información y búsqueda de clientes.",
     estado: "Planeado",
     tags: ["Aplicación web", "Bases de datos", "Multiusuario"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
+    // TODO: reemplazar "#" por la URL del repositorio cuando exista.
+    enlaces: [{ url: "#", texto: "Ver repositorio" }],
   },
 ];
 
