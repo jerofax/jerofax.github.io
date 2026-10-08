@@ -198,7 +198,7 @@ export const proyectos: readonly Project[] = [
       "Proyecto de investigación en matemáticas experimentales sobre Ricci Flow, la ecuación de evolución geométrica central en la demostración de la conjetura de Poincaré. Los resultados se publicarán en explog.xyz, con repositorio abierto.",
     estado: "En curso",
     tags: ["Flujo de Ricci", "Geometría diferencial", "Matemáticas experimentales"],
-    enlace: { url: "https://explog.xyz", texto: "Visitar explog.xyz" },
+    enlace: { url: "https://github.com/jerofax/explog", texto: "Ver repositorio" },
   },
   {
     titulo: "Algoritmos: material de estudio",
@@ -206,17 +206,32 @@ export const proyectos: readonly Project[] = [
       "Repositorio con textos de referencia, explicaciones de los métodos algorítmicos y resolución rigurosa de ejercicios, correspondiente a un curso de Algoritmos de nivel posgrado.",
     estado: "En curso",
     tags: ["Análisis de algoritmos", "Estructuras de datos", "Repositorio"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
+    enlace: {
+      url: "https://github.com/jerofax/algoritmos-material",
+      texto: "Ver repositorio",
+    },
   },
   {
-    titulo: "Optimización no lineal en energías renovables",
+    titulo: "Recuperación de energía con bombas como turbinas",
     resumen:
-      "Formulación y resolución de un problema de optimización no lineal en el sector de energías renovables.",
+      "Formulación como problema de programación no lineal de la recuperación de energía hidráulica en una red de distribución de agua, reemplazando una válvula reductora de presión por una bomba operando como turbina (PAT). Parte de un caso de estudio publicado y explora la regulación híbrida de la máquina.",
     estado: "En curso",
-    tags: ["Optimización no lineal", "Modelamiento matemático", "Energías renovables"],
-    // TODO: reemplazar "#" por la URL del repositorio.
-    enlace: { url: "#", texto: "Ver repositorio" },
+    tags: ["Optimización no lineal", "Modelamiento matemático", "Energías renovables", "Python"],
+    enlace: {
+      url: "https://github.com/jerofax/pat-energy-recovery-nlp",
+      texto: "Ver repositorio",
+    },
+  },
+  {
+    titulo: "Teoría de la computación: ejercicios",
+    resumen:
+      "Tres ejercicios de los parciales de Introducción a la Teoría de la Computación resueltos en Python: simulación de un autómata finito determinista, paso a Forma Normal de Chomsky con el algoritmo CYK y su árbol de derivación, y decisión de la equivalencia de dos autómatas por la diferencia simétrica.",
+    estado: "Terminado",
+    tags: ["Autómatas", "Gramáticas libres de contexto", "CYK", "Python"],
+    enlace: {
+      url: "https://github.com/jerofax/teoria-de-la-computacion",
+      texto: "Ver repositorio",
+    },
   },
   {
     titulo: "Gestor de información para asesores de seguros",
