@@ -176,9 +176,9 @@ export const proyectos: readonly Project[] = [
   {
     titulo: "Explog · Matemáticas experimentales",
     resumen:
-      "Repositorio del curso de posgrado de Matemáticas Experimentales: usar la computadora como laboratorio para plantear una pregunta, programar el experimento y dejar que los datos sugieran o tumben conjeturas. Reúne tres temas: juegos espaciales, el teorema de Gauss-Bonnet discreto y el flujo de Ricci combinatorio sobre superficies trianguladas, que redistribuye la curvatura sin cambiar su suma total.",
+      "Repositorio del curso de posgrado de Matemáticas Experimentales: usar la computadora como laboratorio para plantear una pregunta, programar el experimento y dejar que los datos sugieran o tumben conjeturas. Reúne tres temas: el teorema de Gauss-Bonnet discreto; el flujo de Ricci discreto sobre superficies trianguladas, que redistribuye la curvatura sin cambiar su suma total; y el teorema de Erdős–Kac, según el cual el número de factores primos distintos de un entero se distribuye como una campana normal, que se explora con experimentos numéricos.",
     estado: "En curso",
-    tags: ["Flujo de Ricci", "Gauss-Bonnet discreto", "Matemáticas experimentales"],
+    tags: ["Gauss-Bonnet discreto", "Flujo de Ricci", "Erdős–Kac"],
     enlaces: [
       { url: "https://github.com/jerofax/explog", texto: "Ver repositorio" },
       { url: "https://explog.xyz", texto: "Visitar explog.xyz" },
